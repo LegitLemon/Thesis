@@ -13,6 +13,7 @@ class Simulation:
         # The amount of timesteps we let the simulation run
         self.T = T
         self.pattern = self.init_pattern()
+        self.test = []
 
     # Samples a simple signal
     def init_pattern(self):
@@ -24,14 +25,16 @@ class Simulation:
         # get autonomous part of new state
         undriven_new = self.rnn.drive()
 
-        # Caution!!!!!!!! Only works for on dimensional input
-        # get driven part of new state
-        driven_new = self.rnn.input_weights*p
 
+        # Caution!!!!!!!! Only works for on dimensional input
+        # get driven part of new state, driven new seems to work
+        driven_new = self.rnn.input_weights*p
         # perform state update equation
-        self.rnn.reservoir = np.tanh(undriven_new + driven_new) #self.bias
+        self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias) #self.bias
 
     def run(self):
         for idx, p in enumerate(self.pattern):
             self.next_step(p)
+            self.test.append(float(self.rnn.reservoir[1]))
+
 
