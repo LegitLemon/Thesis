@@ -4,11 +4,11 @@ from Simulation import Simulation
 
 def main():
 
-    # Consider the following signal p(n)=sin(2pin/(10sqrt()))
 
 
-    simulation = Simulation(10, 2)
-    simulation.next_step()
+    T = 100
+    simulation = Simulation(10, T)
+    simulation.run()
     print(simulation.rnn.reservoir)
 
 

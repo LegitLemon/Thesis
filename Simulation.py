@@ -16,17 +16,22 @@ class Simulation:
 
     # Samples a simple signal
     def init_pattern(self):
-        return 1
-        pass
-    # Performs the update equation, updates the state of the RNN
-    def next_step(self):
+        # Consider the following signal p(n)=sin(2pin/(10sqrt())) sampled for 1000 steps of n
+        return [np.sin(2*n/(10*np.sqrt(2))) for n in range(self.T)]
+
+    # updates the state of the RNN
+    def next_step(self, p):
         # get autonomous part of new state
         undriven_new = self.rnn.drive()
 
         # Caution!!!!!!!! Only works for on dimensional input
         # get driven part of new state
-        driven_new = self.pattern * self.rnn.input_weights
+        driven_new = self.rnn.input_weights*p
 
         # perform state update equation
-        self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
+        self.rnn.reservoir = np.tanh(undriven_new + driven_new) #self.bias
+
+    def run(self):
+        for idx, p in enumerate(self.pattern):
+            self.next_step(p)
 
