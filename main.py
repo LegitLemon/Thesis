@@ -1,5 +1,9 @@
+from RNN import RNN
+
 def main():
-    print("Hello World")
+    rnn = RNN(10)
+    print(rnn.drive())
+
 
 
 if __name__ == "__main__":
