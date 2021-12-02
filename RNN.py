@@ -38,7 +38,7 @@ class RNN:
                 row.append(w_ij)
             connection_weights.append(row)
         # Convert to
-        connection_weights = np.array(connection_weights)
+        connection_weights = np.matrix(connection_weights)
         return connection_weights
 
     def get_output(self):

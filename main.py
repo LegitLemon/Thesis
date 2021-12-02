@@ -1,8 +1,15 @@
-from RNN import RNN
+import numpy as np
+
+from Simulation import Simulation
 
 def main():
-    rnn = RNN(10)
-    print(rnn.drive())
+
+    # Consider the following signal p(n)=sin(2pin/(10sqrt()))
+
+
+    simulation = Simulation(10, 2)
+    simulation.next_step()
+    print(simulation.rnn.reservoir)
 
 
 
