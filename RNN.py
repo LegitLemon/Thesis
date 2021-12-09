@@ -47,8 +47,6 @@ class RNN:
         self.min_eigvalues = min(LA.eigvals(connection_weights))
         self.max_eigvalues = max(LA.eigvals(connection_weights))
         connection_weights = (connection_weights-((self.min_eigvalues.real+self.max_eigvalues.real)/2)*np.identity(self.N))/((self.max_eigvalues.real-self.min_eigvalues.real)/2)
-        print(max(LA.eigvals(connection_weights)))
-
         return connection_weights
 
     def get_output(self):
@@ -56,6 +54,7 @@ class RNN:
 
     def drive(self):
         return np.matmul(self.connection_weights, self.reservoir)
+
 
 
 
