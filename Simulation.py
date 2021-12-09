@@ -16,8 +16,12 @@ class Simulation:
         self.T = T
         self.patterns = self.init_patterns()
 
+        self.X = None
+        self.P = None
+
         self.state_collection_matrices = []
         self.state_correlation_matrices = []
+        self.delayed_state_matrices = []
         self.test = []
 
     # Samples a simple signal
@@ -53,7 +57,7 @@ class Simulation:
         # W out = ((XX^T + (roh_out)I_N×N )^−1 X P^T)^T
         print(X.shape)
         W_1 = np.linalg.inv((np.matmul(X, X.transpose()) + rho*np.identity(self.N)))
-        W_opt =(W_1.dot(X).dot(P.transpose())).transpose()
+        W_opt = (W_1.dot(X).dot(P.transpose())).transpose()
         return W_opt
 
     def compute_output_weights(self):
@@ -63,13 +67,43 @@ class Simulation:
             if i != 0:
                 X = np.hstack((X, X_j))
 
+        self.X = X
         # append all pattern matrices
         P = np.array(self.patterns[0][-1000:])
         for i, P_j in enumerate(self.patterns):
             if i != 0:
                 P = np.hstack((P, np.array(P_j[-1000:])))
 
+        self.P = P
         self.rnn.output_weights = self.ridge_regression(X, P)
+        print(self.rnn.output_weights)
+
+    def get_bias_matrix(self):
+        b = np.array(self.rnn.bias)
+        B = b
+        for i in range(3999):
+            B = np.hstack((B,b))
+        return B
+    # W = (( ̃X ̃X′ + rho I_N×N)^−1  ̃X(tanh^−1(X)−B))′
+    def store(self):
+        X_tilde = self.state_collection_matrices[0]
+        rho = 0.0001
+        for i, X_j in enumerate(self.state_collection_matrices):
+            if i != 0:
+                X_tilde = np.hstack((X_tilde, X_j))
+
+        W_1 = np.linalg.inv((np.matmul(X_tilde, X_tilde.transpose()) + rho*np.identity(self.N))).transpose()
+        W_2 = np.matmul(W_1, X_tilde)
+
+        B = self.get_bias_matrix()
+
+        ## very sketchy ??
+        W_3 = np.subtract(self.X, B).transpose()
+
+        print(W_1.shape, W_2.shape, W_3.shape)
+        W_opt = np.matmul(W_2, W_3).transpose()
+        self.rnn.connection_weights = W_opt
+
 
     def load(self):
         for j, pattern in enumerate(self.patterns):
@@ -77,14 +111,20 @@ class Simulation:
                 self.next_step(p)
                 self.test.append(float(self.rnn.reservoir[1]))
                 state = np.array(self.rnn.reservoir)
-                if idx > 499:
+                if idx >= 500:
                     if idx == 500:
                         state_matrix = state
                     else:
                         state_matrix = np.c_[state_matrix, state]
+                    if idx == 501:
+                        delayed_state = state
+                    if idx >501:
+                        delayed_state = np.c_[delayed_state, state]
+
             self.state_correlation_matrices.append(np.corrcoef(state_matrix))
+            self.delayed_state_matrices.append(delayed_state)
             self.state_collection_matrices.append(state_matrix)
 
-
         self.compute_output_weights()
+        self.store()
 

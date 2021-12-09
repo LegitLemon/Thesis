@@ -8,6 +8,7 @@ def main():
 
     simulation = Simulation(100, T)
     simulation.load()
+
     for i in range(len(simulation.patterns)):
         plt.plot(t, simulation.patterns[i])
         #plt.plot(t, simulation.test, label="reservoir activation")
