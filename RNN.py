@@ -1,8 +1,11 @@
 import numpy as np
+from numpy import linalg as LA
 
 
 # Class which represents a reservoir, the only parameter which it requires is the dimension of the reservoir
 class RNN:
+    min_eigvalues = 0
+    max_eigvalues = 1
     # N represents the dimensionality of the reservoir, i.e the amount of neurons.
     def __init__(self, N):
         self.N = N
@@ -22,9 +25,6 @@ class RNN:
         # bias vector, b \in R_N
         self.bias = np.random.normal(0, 1, size=(self.N, 1))
 
-        print(self.connection_weights)
-        print(self.input_weights)
-
     # Initialise Connection weights, W \in R_{NxN}, w_{ij} reflects connection strength from x_j to x_i [0,1]
     def init_connection_weights(self):
         connection_weights = []
@@ -40,8 +40,15 @@ class RNN:
                     w_ij = np.random.normal(0.5, 0.5)
                 row.append(w_ij)
             connection_weights.append(row)
-        # Convert to
+
         connection_weights = np.matrix(connection_weights)
+        print(max(LA.eigvals(connection_weights)))
+
+        self.min_eigvalues = min(LA.eigvals(connection_weights))
+        self.max_eigvalues = max(LA.eigvals(connection_weights))
+        connection_weights = (connection_weights-((self.min_eigvalues.real+self.max_eigvalues.real)/2)*np.identity(self.N))/((self.max_eigvalues.real-self.min_eigvalues.real)/2)
+        print(max(LA.eigvals(connection_weights)))
+
         return connection_weights
 
     def get_output(self):

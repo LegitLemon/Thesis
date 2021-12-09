@@ -3,16 +3,14 @@ import matplotlib.pyplot as plt
 
 def main():
 
-
-
-    T = 2000
+    T = 500
     t = [x for x in range(T)]
 
     simulation = Simulation(100, T)
     simulation.run()
 
-    plt.plot(t, simulation.pattern, label="2")
-    plt.plot(t, simulation.test, label="1")
+    plt.plot(t, simulation.pattern, label="input")
+    plt.plot(t, simulation.test, label="reservoir activation")
     plt.legend()
     plt.show()
 

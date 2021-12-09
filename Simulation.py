@@ -14,6 +14,7 @@ class Simulation:
         self.T = T
         self.pattern = self.init_pattern()
         self.test = []
+        self.test2 = []
 
     # Samples a simple signal
     def init_pattern(self):
