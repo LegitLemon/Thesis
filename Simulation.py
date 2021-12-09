@@ -1,6 +1,7 @@
 from RNN import RNN
 import numpy as np
 from scipy import signal
+from Conceptor import Conceptor
 
 # This class combines a RNN together with a pattern, this class allows (autonomous) driving of the pattern
 # with or without an input pattern.
@@ -53,7 +54,6 @@ class Simulation:
 
     def ridge_regression(self, X, P):
         rho = 0.01
-
         # W out = ((XX^T + (roh_out)I_N×N )^−1 X P^T)^T
         print(X.shape)
         W_1 = np.linalg.inv((np.matmul(X, X.transpose()) + rho*np.identity(self.N)))
@@ -121,7 +121,10 @@ class Simulation:
                     if idx >501:
                         delayed_state = np.c_[delayed_state, state]
 
-            self.state_correlation_matrices.append(np.corrcoef(state_matrix))
+            R = np.corrcoef(state_matrix)
+            self.rnn.conceptors.append(Conceptor(R))
+
+            self.state_correlation_matrices.append(R)
             self.delayed_state_matrices.append(delayed_state)
             self.state_collection_matrices.append(state_matrix)
 

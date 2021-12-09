@@ -25,6 +25,8 @@ class RNN:
         # bias vector, b \in R_N
         self.bias = np.random.normal(0, 1, size=(self.N, 1))
 
+        self.conceptors = []
+
     # Initialise Connection weights, W \in R_{NxN}, w_{ij} reflects connection strength from x_j to x_i [0,1]
     def init_connection_weights(self):
         connection_weights = []
