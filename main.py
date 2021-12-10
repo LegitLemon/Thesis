@@ -10,14 +10,19 @@ def main():
 
     simulation = Simulation(N=N_neurons, T=T, washout_time=washout_time, aperture=aperture)
 
-    simulation.load()
+    #load patterns into reservoir
+    simulation.load(loaded=False)
+
+    #compute conceptors
+    simulation.load(loaded=True)
+
+    #
     tr = simulation.autonomous()
 
-    t = [x for x in range(1000)]
     patterns = simulation.init_patterns()
 
     for itr, i in enumerate(tr):
-        plt.plot(t, i, label="output")
+        plt.plot(i, label="output")
         plt.plot(patterns[itr], label="target")
         plt.legend()
         plt.show()

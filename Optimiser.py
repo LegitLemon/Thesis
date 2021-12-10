@@ -1,13 +1,13 @@
 import numpy as np
-
+# class which implements ridge regression used at several times to compute optimal solutions
 class Optimiser:
-    def __init__(self, rnn, patterns, wahsout_time, N, T):
+    def __init__(self, rnn, patterns, washout, N, T):
 
         self.state_collection_matrices = []
         self.delayed_state_matrices = []
         self.rnn = rnn
         self.patterns = patterns
-        self.washout_time = wahsout_time
+        self.washout_time = washout
         self.N = N
         self.T = T
 
@@ -17,10 +17,8 @@ class Optimiser:
         self.rho_Wout = 0.01
         self.rho_W = 0.0001
 
-
+    # perform a ridge regression with constant rho, and return the analytical solution
     def ridge_regression(self, X, P, rho):
-        # W out = ((XX^T + (roh_out)I_N×N )^−1 X P^T)^T
-        print(X.shape)
         W_1 = np.linalg.inv((np.matmul(X, X.transpose()) + rho*np.identity(self.N)))
         W_opt = (W_1.dot(X).dot(P.transpose())).transpose()
         return W_opt
@@ -30,10 +28,8 @@ class Optimiser:
         #append all state collection matrices
         X = self.state_collection_matrices[0]
         for i, X_j in enumerate(self.state_collection_matrices):
-            print(X_j.shape)
             if i != 0:
                 X = np.hstack((X, X_j))
-        print(X.shape)
         self.X = X
 
         # append all pattern matrices
@@ -60,5 +56,5 @@ class Optimiser:
         b = np.array(self.rnn.bias)
         B = b
         for i in range((len(self.patterns)*1000)-1):
-            B = np.hstack((B,b))
+            B = np.hstack((B, b))
         return B

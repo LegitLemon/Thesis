@@ -4,12 +4,11 @@ from numpy import linalg as LA
 
 # Class which represents a reservoir, the only parameter which it requires is the dimension of the reservoir
 class RNN:
-    min_eigvalues = 0
-    max_eigvalues = 1
     # N represents the dimensionality of the reservoir, i.e the amount of neurons.
     def __init__(self, N):
         self.N = N
         self.reservoir = None
+
         # Reservoir state \in R_N
         self.init_reservoir()
 
@@ -23,9 +22,7 @@ class RNN:
         self.output_weights = np.random.normal(0, 1, size=(1, self.N))
 
         # bias vector, b \in R_N
-        bias = N*[0.2]
         self.bias = np.random.normal(.2, 0, size=(self.N, 1))
-
 
         self.conceptors = []
 
@@ -53,6 +50,7 @@ class RNN:
 
         self.min_eigvalues = min(LA.eigvals(connection_weights))
         self.max_eigvalues = max(LA.eigvals(connection_weights))
+        # scale eigenvalues of matrix s.t it has the ESP
         connection_weights = (connection_weights-((self.min_eigvalues.real+self.max_eigvalues.real)/2)*np.identity(self.N))/((self.max_eigvalues.real-self.min_eigvalues.real)/2)
         return connection_weights
 

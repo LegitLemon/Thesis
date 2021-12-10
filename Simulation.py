@@ -7,10 +7,8 @@ from Optimiser import Optimiser
 # This class combines a RNN together with a pattern, this class allows (autonomous) driving of the pattern
 # with or without an input pattern.
 class Simulation:
-
     # Pattern: discrete time signal of a sample pattern, in this case assumed to be 1 dimensional
     def __init__(self, N, T, washout_time, aperture):
-
         self.N = N
         self.rnn = RNN(N)
         self.alpha = aperture
@@ -19,7 +17,6 @@ class Simulation:
         # The amount of timesteps we let the simulation run
         self.T = T
         self.patterns = self.init_patterns()
-
         self.optimizer = Optimiser(self.rnn, self.patterns, self.washout_time, self.N, self.T)
 
     # Samples a simple signal
@@ -43,24 +40,12 @@ class Simulation:
     def next_step(self, p):
         # get autonomous part of new state
         undriven_new = self.rnn.drive_with_input()
-
         # get driven part of new state, driven new seems to work
         driven_new = self.rnn.input_weights*p
         # perform state update equation
         self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
 
-    # check whether the state the pattern has been encoded in the state after some washout time
-    def test(self):
-        ts =[]
-        for j, pattern in enumerate(self.patterns):
-            test_run =[]
-            for p_n, n in enumerate(pattern):
-                self.next_step(n)
-                test_run.append(self.rnn.get_output())
-            ts.append(test_run)
-        return ts
-
-    def load(self):
+    def load(self, loaded):
         print("Began storing patterns")
         for j, pattern in enumerate(self.patterns):
             self.rnn.init_reservoir()
@@ -80,16 +65,19 @@ class Simulation:
 
             print("finished driving pattern: ", j)
             delayed_state = np.c_[delayed_state, state]
-            R = np.corrcoef(state_matrix)
 
-            self.optimizer.state_collection_matrices.append(state_matrix)
-            self.optimizer.delayed_state_matrices.append(delayed_state)
+            if loaded is True:
+                R = np.corrcoef(state_matrix)
+                self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+            else:
+                self.optimizer.state_collection_matrices.append(state_matrix)
+                self.optimizer.delayed_state_matrices.append(delayed_state)
 
-            self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+        if loaded is False:
+            self.rnn.output_weights = self.optimizer.compute_output_weights()
+            self.rnn.connection_weights = self.optimizer.compute_connection_weights()
 
-        self.rnn.output_weights = self.optimizer.compute_output_weights()
-        self.rnn.connection_weights = self.optimizer.compute_connection_weights()
-
+    # retrieval using conceptors
     def autonomous(self):
         ts = []
         for j in range(len(self.patterns)):
@@ -100,5 +88,17 @@ class Simulation:
                 test_run.append(self.rnn.get_output())
             ts.append(test_run)
         return ts
+
+    # check whether the state the pattern has been encoded in the state after some washout time
+    def test(self):
+        ts = []
+        for j, pattern in enumerate(self.patterns):
+            test_run = []
+            for p_n, n in enumerate(pattern):
+                self.next_step(n)
+                test_run.append(self.rnn.get_output())
+            ts.append(test_run)
+        return ts
+
 
 
