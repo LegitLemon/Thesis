@@ -13,6 +13,7 @@ class Simulation:
         self.N = N
         self.rnn = RNN(N)
         self.alpha = 100
+        self.washout_time = 500
         # The amount of timesteps we let the simulation run
         self.T = T
         self.patterns = self.init_patterns()
@@ -63,9 +64,10 @@ class Simulation:
         #append all state collection matrices
         X = self.state_collection_matrices[0]
         for i, X_j in enumerate(self.state_collection_matrices):
+            print(X_j.shape)
             if i != 0:
                 X = np.hstack((X, X_j))
-
+        print(X.shape)
         self.X = X
         # append all pattern matrices
         P = np.array(self.patterns[0][-1000:])
@@ -121,19 +123,18 @@ class Simulation:
             for idx, p in enumerate(pattern):
                 self.next_step(p)
                 state = np.array(self.rnn.reservoir)
-                if idx >= 500:
-                    if idx == 500:
+                if idx >= self.washout_time:
+                    if idx == self.washout_time:
                         state_matrix = state
                     else:
                         state_matrix = np.c_[state_matrix, state]
-                    if idx == 501:
+                    if idx == self.washout_time+1:
                         delayed_state = state
-                    if idx >501:
+                    if idx >self.washout_time+1:
                         delayed_state = np.c_[delayed_state, state]
 
             print("finished driving pattern: ", j)
             delayed_state = np.c_[delayed_state, state]
-
             R = np.corrcoef(state_matrix)
             self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
             self.delayed_state_matrices.append(delayed_state)
