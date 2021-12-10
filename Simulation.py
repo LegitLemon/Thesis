@@ -12,7 +12,7 @@ class Simulation:
         # Rnn used throughout the simulations
         self.N = N
         self.rnn = RNN(N)
-
+        self.alpha = 10
         # The amount of timesteps we let the simulation run
         self.T = T
         self.patterns = self.init_patterns()
@@ -21,9 +21,7 @@ class Simulation:
         self.P = None
 
         self.state_collection_matrices = []
-        self.state_correlation_matrices = []
         self.delayed_state_matrices = []
-        self.test = []
 
     # Samples a simple signal
     def init_patterns(self):
@@ -45,12 +43,12 @@ class Simulation:
     # updates the state of the RNN
     def next_step(self, p):
         # get autonomous part of new state
-        undriven_new = self.rnn.drive()
+        undriven_new = self.rnn.drive_with_input()
 
         # get driven part of new state, driven new seems to work
         driven_new = self.rnn.input_weights*p
         # perform state update equation
-        self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias) #self.bias
+        self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
 
     def ridge_regression(self, X, P):
         rho = 0.01
@@ -76,7 +74,6 @@ class Simulation:
 
         self.P = P
         self.rnn.output_weights = self.ridge_regression(X, P)
-        print(self.rnn.output_weights)
 
     def get_bias_matrix(self):
         b = np.array(self.rnn.bias)
@@ -84,32 +81,41 @@ class Simulation:
         for i in range(3999):
             B = np.hstack((B,b))
         return B
+
     # W = (( ̃X ̃X′ + rho I_N×N)^−1  ̃X(tanh^−1(X)−B))′
     def store(self):
         X_tilde = self.state_collection_matrices[0]
         rho = 0.0001
-        for i, X_j in enumerate(self.state_collection_matrices):
-            if i != 0:
+        for i, X_j in enumerate(self.delayed_state_matrices):
+            if i > 0:
                 X_tilde = np.hstack((X_tilde, X_j))
 
-        W_1 = np.linalg.inv((np.matmul(X_tilde, X_tilde.transpose()) + rho*np.identity(self.N))).transpose()
+        W_1 = np.linalg.inv((np.matmul(X_tilde, X_tilde.transpose()) + rho*np.identity(self.N)))
         W_2 = np.matmul(W_1, X_tilde)
 
         B = self.get_bias_matrix()
 
         ## very sketchy ??
-        W_3 = np.subtract(self.X, B).transpose()
+        W_3 = np.subtract(np.arctan(self.X), B).transpose()
 
         print(W_1.shape, W_2.shape, W_3.shape)
         W_opt = np.matmul(W_2, W_3).transpose()
         self.rnn.connection_weights = W_opt
 
+    def test(self):
+        ts =[]
+        for j, pattern in enumerate(self.patterns):
+            test_run =[]
+            for p_n, n in enumerate(pattern):
+                self.next_step(n)
+                test_run.append(self.rnn.get_output())
+            ts.append(test_run)
+        return ts
 
     def load(self):
         for j, pattern in enumerate(self.patterns):
             for idx, p in enumerate(pattern):
                 self.next_step(p)
-                self.test.append(float(self.rnn.reservoir[1]))
                 state = np.array(self.rnn.reservoir)
                 if idx >= 500:
                     if idx == 500:
@@ -121,13 +127,25 @@ class Simulation:
                     if idx >501:
                         delayed_state = np.c_[delayed_state, state]
 
-            R = np.corrcoef(state_matrix)
-            self.rnn.conceptors.append(Conceptor(R))
+            delayed_state = np.c_[delayed_state, state]
 
-            self.state_correlation_matrices.append(R)
+            R = np.corrcoef(state_matrix)
+            self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
             self.delayed_state_matrices.append(delayed_state)
             self.state_collection_matrices.append(state_matrix)
 
         self.compute_output_weights()
         self.store()
+
+    def autonomous(self):
+        ts = []
+        for j in range(len(self.patterns)):
+            self.rnn.init_reservoir()
+            test_run = []
+            for n in range(1000):
+                self.rnn.reservoir = np.matmul(self.rnn.conceptors[j].C, np.tanh(self.rnn.drive_with_input())+self.rnn.bias)
+                test_run.append(self.rnn.get_output())
+            ts.append(test_run)
+        return ts
+
 

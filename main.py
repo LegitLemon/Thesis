@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 def main():
 
     T = 1500
-    t = [x for x in range(T)]
+    t = [x for x in range(1000)]
 
-    simulation = Simulation(100, T)
+    simulation = Simulation(150, T)
     simulation.load()
-
-    for i in range(len(simulation.patterns)):
-        plt.plot(t, simulation.patterns[i])
-        #plt.plot(t, simulation.test, label="reservoir activation")
-    plt.legend()
-    plt.show()
-
+    tr = simulation.autonomous()
+    patterns = simulation.init_patterns()
+    for itr, i in enumerate(tr):
+        plt.plot(t, i, label="output")
+        plt.plot(patterns[itr], label="target")
+        plt.legend()
+        plt.show()
 
 if __name__ == "__main__":
     main()

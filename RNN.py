@@ -9,9 +9,9 @@ class RNN:
     # N represents the dimensionality of the reservoir, i.e the amount of neurons.
     def __init__(self, N):
         self.N = N
-
+        self.reservoir = None
         # Reservoir state \in R_N
-        self.reservoir = np.random.normal(0, 1, size=(self.N, 1))
+        self.init_reservoir()
 
         # Connection weights W \in R_{NxN}
         self.connection_weights = self.init_connection_weights()
@@ -26,6 +26,9 @@ class RNN:
         self.bias = np.random.normal(0, 1, size=(self.N, 1))
 
         self.conceptors = []
+
+    def init_reservoir(self):
+        self.reservoir = np.random.normal(0, 1, size=(self.N, 1))
 
     # Initialise Connection weights, W \in R_{NxN}, w_{ij} reflects connection strength from x_j to x_i [0,1]
     def init_connection_weights(self):
@@ -52,10 +55,11 @@ class RNN:
         return connection_weights
 
     def get_output(self):
-        return np.matmul(self.output_weights, self.reservoir)
+        return float(np.matmul(self.output_weights, self.reservoir))
 
-    def drive(self):
+    def drive_with_input(self):
         return np.matmul(self.connection_weights, self.reservoir)
+
 
 
 
