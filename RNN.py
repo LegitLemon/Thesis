@@ -23,7 +23,8 @@ class RNN:
         self.output_weights = np.random.normal(0, 1, size=(1, self.N))
 
         # bias vector, b \in R_N
-        self.bias = np.random.normal(0, 1, size=(self.N, 1))
+        self.bias = np.array(N*[0.2])
+        #np.random.normal(0, 1, size=(self.N, 1))
 
         self.conceptors = []
 

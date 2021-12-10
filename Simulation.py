@@ -12,7 +12,7 @@ class Simulation:
         # Rnn used throughout the simulations
         self.N = N
         self.rnn = RNN(N)
-        self.alpha = 10
+        self.alpha = 100
         # The amount of timesteps we let the simulation run
         self.T = T
         self.patterns = self.init_patterns()
@@ -30,13 +30,13 @@ class Simulation:
         patterns.append([np.sin(2*n/(10*np.sqrt(2))) for n in range(self.T)])
 
         # Square Wave
-        patterns.append([signal.square(n/10) for n in range(self.T)])
+        #patterns.append([signal.square(n/10) for n in range(self.T)])
 
         # regular cosine
-        patterns.append([np.cos(n/10) for n in range(self.T)])
+        #patterns.append([np.cos(n/10) for n in range(self.T)])
 
         # Sawtooth Wave
-        patterns.append([signal.sawtooth(n/10) for n in range(self.T)])
+        #patterns.append([signal.sawtooth(n/10) for n in range(self.T)])
 
         return patterns
 
@@ -59,6 +59,7 @@ class Simulation:
         return W_opt
 
     def compute_output_weights(self):
+        print("Computing optimal output weights")
         #append all state collection matrices
         X = self.state_collection_matrices[0]
         for i, X_j in enumerate(self.state_collection_matrices):
@@ -78,12 +79,13 @@ class Simulation:
     def get_bias_matrix(self):
         b = np.array(self.rnn.bias)
         B = b
-        for i in range(3999):
+        for i in range((len(self.patterns)*1000)-1):
             B = np.hstack((B,b))
         return B
 
     # W = (( ̃X ̃X′ + rho I_N×N)^−1  ̃X(tanh^−1(X)−B))′
     def store(self):
+        print("Computing optimal starting weights")
         X_tilde = self.state_collection_matrices[0]
         rho = 0.0001
         for i, X_j in enumerate(self.delayed_state_matrices):
@@ -91,15 +93,15 @@ class Simulation:
                 X_tilde = np.hstack((X_tilde, X_j))
 
         W_1 = np.linalg.inv((np.matmul(X_tilde, X_tilde.transpose()) + rho*np.identity(self.N)))
-        W_2 = np.matmul(W_1, X_tilde)
+        #W_2 = np.matmul(W_1, X_tilde)
 
         B = self.get_bias_matrix()
 
         ## very sketchy ??
-        W_3 = np.subtract(np.arctan(self.X), B).transpose()
-
+        W_2 = np.subtract(np.arctan(self.X), B).transpose()
+        W_3 = np.matmul(X_tilde, W_2)
         print(W_1.shape, W_2.shape, W_3.shape)
-        W_opt = np.matmul(W_2, W_3).transpose()
+        W_opt = np.matmul(W_1, W_3).transpose()
         self.rnn.connection_weights = W_opt
 
     def test(self):
@@ -113,7 +115,9 @@ class Simulation:
         return ts
 
     def load(self):
+        print("Began storing patterns")
         for j, pattern in enumerate(self.patterns):
+            print("Driving pattern: ", j)
             for idx, p in enumerate(pattern):
                 self.next_step(p)
                 state = np.array(self.rnn.reservoir)
@@ -127,6 +131,7 @@ class Simulation:
                     if idx >501:
                         delayed_state = np.c_[delayed_state, state]
 
+            print("finished driving pattern: ", j)
             delayed_state = np.c_[delayed_state, state]
 
             R = np.corrcoef(state_matrix)
