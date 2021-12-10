@@ -30,13 +30,13 @@ class Simulation:
         patterns.append([np.sin(2*n/(10*np.sqrt(2))) for n in range(self.T)])
 
         # Square Wave
-        #patterns.append([signal.square(n/10) for n in range(self.T)])
+        patterns.append([signal.square(n/10) for n in range(self.T)])
 
         # regular cosine
-        #patterns.append([np.cos(n/10) for n in range(self.T)])
+        patterns.append([np.cos(n/10) for n in range(self.T)])
 
         # Sawtooth Wave
-        #patterns.append([signal.sawtooth(n/10) for n in range(self.T)])
+        patterns.append([signal.sawtooth(n/10) for n in range(self.T)])
 
         return patterns
 
