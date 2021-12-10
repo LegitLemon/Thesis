@@ -5,7 +5,6 @@ from Conceptor import Conceptor
 from Optimiser import Optimiser
 
 # This class combines a RNN together with a pattern, this class allows (autonomous) driving of the pattern
-# with or without an input pattern.
 class Simulation:
     # Pattern: discrete time signal of a sample pattern, in this case assumed to be 1 dimensional
     def __init__(self, N, T, washout_time, aperture):
@@ -19,7 +18,7 @@ class Simulation:
         self.patterns = self.init_patterns()
         self.optimizer = Optimiser(self.rnn, self.patterns, self.washout_time, self.N, self.T)
 
-    # Samples a simple signal
+    # Sample 4 different one dimensional signals
     def init_patterns(self):
         patterns = []
         # Consider the following signal p(n)=sin(2pin/(10sqrt())) sampled for 1000 steps of n
@@ -89,7 +88,7 @@ class Simulation:
             ts.append(test_run)
         return ts
 
-    # check whether the state the pattern has been encoded in the state after some washout time
+    # check whether the pattern has been encoded in the reservoir some washout time
     def test(self):
         ts = []
         for j, pattern in enumerate(self.patterns):

@@ -1,7 +1,6 @@
 import numpy as np
 
 class Conceptor:
-
     def __init__(self, R, alpha, N):
         self.N = N
         self.alpha = alpha

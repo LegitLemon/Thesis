@@ -17,7 +17,7 @@ class Optimiser:
         self.rho_Wout = 0.01
         self.rho_W = 0.0001
 
-    # perform a ridge regression with constant rho, and return the analytical solution
+    # perform a ridge regression with constant rho, and return the analytic solution
     def ridge_regression(self, X, P, rho):
         W_1 = np.linalg.inv((np.matmul(X, X.transpose()) + rho*np.identity(self.N)))
         W_opt = (W_1.dot(X).dot(P.transpose())).transpose()

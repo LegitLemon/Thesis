@@ -2,7 +2,6 @@ from Simulation import Simulation
 import matplotlib.pyplot as plt
 
 def main():
-
     T = 1500
     washout_time = 500
     N_neurons = 100
@@ -10,10 +9,10 @@ def main():
 
     simulation = Simulation(N=N_neurons, T=T, washout_time=washout_time, aperture=aperture)
 
-    #load patterns into reservoir
+    # load patterns into reservoir
     simulation.load(loaded=False)
 
-    #compute conceptors
+    # compute conceptors
     simulation.load(loaded=True)
 
     #
@@ -26,6 +25,7 @@ def main():
         plt.plot(patterns[itr], label="target")
         plt.legend()
         plt.show()
+
 
 if __name__ == "__main__":
     main()

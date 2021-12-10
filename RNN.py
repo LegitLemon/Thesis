@@ -48,10 +48,10 @@ class RNN:
         connection_weights = np.matrix(connection_weights)
         print(max(LA.eigvals(connection_weights)))
 
-        self.min_eigvalues = min(LA.eigvals(connection_weights))
-        self.max_eigvalues = max(LA.eigvals(connection_weights))
+        min_eigvalues = min(LA.eigvals(connection_weights))
+        max_eigvalues = max(LA.eigvals(connection_weights))
         # scale eigenvalues of matrix s.t it has the ESP
-        connection_weights = (connection_weights-((self.min_eigvalues.real+self.max_eigvalues.real)/2)*np.identity(self.N))/((self.max_eigvalues.real-self.min_eigvalues.real)/2)
+        connection_weights = (connection_weights-((min_eigvalues.real+max_eigvalues.real)/2)*np.identity(self.N))/((max_eigvalues.real-min_eigvalues.real)/2)
         return connection_weights
 
     def get_output(self):
