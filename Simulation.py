@@ -37,7 +37,7 @@ class Simulation:
         return patterns
 
     # updates the state of the RNN
-    def next_step(self, p):
+    def next_step(self, p=0):
         # get autonomous part of new state
         undriven_new = self.rnn.drive_with_input()
         # get driven part of new state, driven new seems to work
@@ -50,8 +50,10 @@ class Simulation:
         for j, pattern in enumerate(self.patterns):
             self.rnn.init_reservoir()
             print("Driving pattern: ", j)
+            self.rnn.conceptors.append(Conceptor(3, self.alpha, self.N))
             for idx, p in enumerate(pattern):
                 self.next_step(p)
+                self.optimizer.update_conceptor(j)
                 state = np.array(self.rnn.reservoir)
                 if idx >= self.washout_time:
                     if idx == self.washout_time:
@@ -67,8 +69,10 @@ class Simulation:
             delayed_state = np.c_[delayed_state, state]
 
             if loaded is True:
-                R = np.corrcoef(state_matrix)
-                self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+                pass
+                #R = np.matmul(state_matrix, state_matrix.transpose())/self.N
+                #self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+
             else:
                 self.optimizer.state_collection_matrices.append(state_matrix)
                 self.optimizer.delayed_state_matrices.append(delayed_state)
@@ -83,8 +87,8 @@ class Simulation:
         for j in range(len(self.patterns)):
             self.rnn.init_reservoir()
             test_run = []
-            for n in range(1000):
-                self.rnn.reservoir = np.matmul(self.rnn.conceptors[j].C, np.tanh(self.rnn.drive_with_input())+self.rnn.bias)
+            for n in range(self.T):
+                self.next_step()
                 test_run.append(self.rnn.get_output())
             ts.append(test_run)
         return ts

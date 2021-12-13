@@ -16,6 +16,7 @@ class Optimiser:
 
         self.rho_Wout = 0.01
         self.rho_W = 0.0001
+        self.lamb = 0.001
 
     # perform a ridge regression with constant rho, and return the analytic solution
     def ridge_regression(self, X, P, rho):
@@ -58,3 +59,9 @@ class Optimiser:
         for i in range((len(self.patterns)*(self.T-self.washout_time))-1):
             B = np.hstack((B, b))
         return B
+
+    def update_conceptor(self, j):
+        alpha = self.rnn.conceptors[0].alpha
+        term1 = self.rnn.reservoir - np.matmul(self.rnn.conceptors[j].C, self.rnn.reservoir.dot(self.rnn.reservoir.transpose()))
+        term2 = alpha**-2*self.rnn.conceptors[j].C
+        self.rnn.conceptors[j].C += self.lamb*(term1-term2)
