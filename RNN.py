@@ -45,7 +45,6 @@ class RNN:
             connection_weights.append(row)
 
         connection_weights = np.matrix(connection_weights)
-        print(max(LA.eigvals(connection_weights)))
 
         min_eigvalues = min(LA.eigvals(connection_weights))
         max_eigvalues = max(LA.eigvals(connection_weights))
