@@ -4,6 +4,7 @@ from scipy import signal
 from Conceptor import Conceptor
 from Optimiser import Optimiser
 
+
 # This class combines a RNN together with a pattern, this class allows (autonomous) driving of the pattern
 class Simulation:
     # Pattern: discrete time signal of a sample pattern, in this case assumed to be 1 dimensional

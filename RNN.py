@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
 
-
 # Class which represents a reservoir, the only parameter which it requires is the dimension of the reservoir
 class RNN:
     # N represents the dimensionality of the reservoir, i.e the amount of neurons.
@@ -46,7 +45,6 @@ class RNN:
             connection_weights.append(row)
 
         connection_weights = np.matrix(connection_weights)
-        print(max(LA.eigvals(connection_weights)))
 
         min_eigvalues = min(LA.eigvals(connection_weights))
         max_eigvalues = max(LA.eigvals(connection_weights))

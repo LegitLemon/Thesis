@@ -55,6 +55,6 @@ class Optimiser:
     def get_bias_matrix(self):
         b = np.array(self.rnn.bias)
         B = b
-        for i in range((len(self.patterns)*1000)-1):
+        for i in range((len(self.patterns)*(self.T-self.washout_time))-1):
             B = np.hstack((B, b))
         return B
