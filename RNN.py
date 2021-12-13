@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
 
-
 # Class which represents a reservoir, the only parameter which it requires is the dimension of the reservoir
 class RNN:
     # N represents the dimensionality of the reservoir, i.e the amount of neurons.

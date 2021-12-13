@@ -16,7 +16,7 @@ def main():
     simulation.load(loaded=True)
 
     #
-    tr = simulation.autonomous()
+    tr = simulation.test()
 
     patterns = simulation.init_patterns()
 
