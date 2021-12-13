@@ -18,6 +18,6 @@ class Conceptor:
         self.C = C_3
 
     def init_Conceptor_gradient(self):
-        self.C = np.random.normal(0, 1, (self.N, self.N))
+        self.C = np.random.normal(1, 1, (self.N, self.N))
 
 
