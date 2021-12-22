@@ -53,10 +53,10 @@ class RNN:
         return connection_weights
 
     def get_output(self):
-        return float(np.matmul(self.output_weights, self.reservoir))
+        return float(np.dot(self.output_weights, self.reservoir))
 
     def drive_with_input(self):
-        return np.matmul(self.connection_weights, self.reservoir)
+        return np.dot(self.connection_weights, self.reservoir)
 
 
 

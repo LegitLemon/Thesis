@@ -6,16 +6,13 @@ class Conceptor:
         self.alpha = alpha
         self.R = R
         self.C = None
-        self.init_Conceptor_gradient()
+        self.init_Conceptor_analytic()
 
     #C(R, α) = R (R + α−2 I)−1 = (R + α−2 I)−1 R
     def init_Conceptor_analytic(self):
         print("Initialisaing Conceptor")
         C_0 = self.alpha**-2 * np.identity(self.N)
-        C_1 = np.add(self.R, C_0)
-        C_2 = np.linalg.inv(C_1)
-        C_3 = np.matmul(self.R, C_2)
-        self.C = C_3
+        self.C = np.dot(self.R, np.linalg.inv(np.add(self.R, C_0)))
 
     def init_Conceptor_gradient(self):
         self.C = np.random.normal(1, 1, (self.N, self.N))

@@ -2,10 +2,10 @@ from Simulation import Simulation
 import matplotlib.pyplot as plt
 
 def main():
-    T = 1500
-    washout_time = 500
+    T = 200
+    washout_time = 100
     N_neurons = 100
-    aperture = 10
+    aperture = 1
 
     simulation = Simulation(N=N_neurons, T=T, washout_time=washout_time, aperture=aperture)
 

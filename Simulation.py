@@ -37,7 +37,7 @@ class Simulation:
         return patterns
 
     # updates the state of the RNN
-    def next_step(self, p=0):
+    def next_step_with_input(self, p=0):
         # get autonomous part of new state
         undriven_new = self.rnn.drive_with_input()
         # get driven part of new state, driven new seems to work
@@ -45,15 +45,17 @@ class Simulation:
         # perform state update equation
         self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
 
+    def next_step_without_input(self, C):
+        undriven_new = self.rnn.drive_with_input()
+        self.rnn.reservoir = np.dot(C, np.tanh(undriven_new+self.rnn.bias))
+
     def load(self, loaded):
         print("Began storing patterns")
         for j, pattern in enumerate(self.patterns):
             self.rnn.init_reservoir()
             print("Driving pattern: ", j)
-            self.rnn.conceptors.append(Conceptor(3, self.alpha, self.N))
             for idx, p in enumerate(pattern):
-                self.next_step(p)
-                self.optimizer.update_conceptor(j)
+                self.next_step_with_input(p)
                 state = np.array(self.rnn.reservoir)
                 if idx >= self.washout_time:
                     if idx == self.washout_time:
@@ -69,9 +71,8 @@ class Simulation:
             delayed_state = np.c_[delayed_state, state]
 
             if loaded is True:
-                pass
-                #R = np.matmul(state_matrix, state_matrix.transpose())/self.N
-                #self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+                R = np.dot(state_matrix, state_matrix.transpose())/self.N
+                self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
 
             else:
                 self.optimizer.state_collection_matrices.append(state_matrix)
@@ -88,7 +89,7 @@ class Simulation:
             self.rnn.init_reservoir()
             test_run = []
             for n in range(self.T):
-                self.next_step()
+                self.next_step_without_input(self.rnn.conceptors[j].C)
                 test_run.append(self.rnn.get_output())
             ts.append(test_run)
         return ts
@@ -99,7 +100,7 @@ class Simulation:
         for j, pattern in enumerate(self.patterns):
             test_run = []
             for p_n, n in enumerate(pattern):
-                self.next_step(n)
+                self.next_step_with_input(n)
                 test_run.append(self.rnn.get_output())
             ts.append(test_run)
         return ts
