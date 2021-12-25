@@ -37,49 +37,51 @@ class Simulation:
         return patterns
 
     # updates the state of the RNN
-    def next_step_with_input(self, p=0):
+    def next_step_with_input(self, p=0, C=None):
         # get autonomous part of new state
         undriven_new = self.rnn.drive_with_input()
         # get driven part of new state, driven new seems to work
         driven_new = self.rnn.input_weights*p
         # perform state update equation
-        self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
+        if C is not None:
+            self.rnn.reservoir = np.dot(C, np.tanh(undriven_new + driven_new + self.rnn.bias))
+        else:
+            self.rnn.reservoir = np.tanh(undriven_new + driven_new + self.rnn.bias)
+
 
     def next_step_without_input(self, C):
         undriven_new = self.rnn.drive_with_input()
         self.rnn.reservoir = np.dot(C, np.tanh(undriven_new+self.rnn.bias))
 
-    def load(self, loaded):
+    def load(self, load_patterns=True):
         print("Began storing patterns")
+        state_matrix = None
+        delayed_state = None
         for j, pattern in enumerate(self.patterns):
             self.rnn.init_reservoir()
             print("Driving pattern: ", j)
             for idx, p in enumerate(pattern):
+                # debug
                 self.next_step_with_input(p)
                 state = np.array(self.rnn.reservoir)
-                if idx >= self.washout_time:
-                    if idx == self.washout_time:
-                        state_matrix = state
-                    else:
-                        state_matrix = np.c_[state_matrix, state]
-                    if idx == self.washout_time+1:
-                        delayed_state = state
-                    if idx >self.washout_time+1:
-                        delayed_state = np.c_[delayed_state, state]
-
+                if idx == self.washout_time:
+                    state_matrix = state
+                if idx>self.washout_time:
+                    state_matrix = np.c_[state_matrix, state]
+                if idx == self.washout_time-1:
+                    delayed_state = state
+                if idx > self.washout_time-1 and idx<self.T-1:
+                    delayed_state = np.c_[delayed_state, state]
+            #delayed_state = np.c_[delayed_state, state]
             print("finished driving pattern: ", j)
-            delayed_state = np.c_[delayed_state, state]
+            print(state.shape)
+            R = np.dot(state_matrix, state_matrix.transpose()) / self.N
+            self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
+            self.optimizer.state_collection_matrices.append(state_matrix)
+            self.optimizer.delayed_state_matrices.append(delayed_state)
 
-            if loaded is True:
-                R = np.dot(state_matrix, state_matrix.transpose())/self.N
-                self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
-
-            else:
-                self.optimizer.state_collection_matrices.append(state_matrix)
-                self.optimizer.delayed_state_matrices.append(delayed_state)
-
-        if loaded is False:
-            self.rnn.output_weights = self.optimizer.compute_output_weights()
+        self.rnn.output_weights = self.optimizer.compute_output_weights()
+        if load_patterns:
             self.rnn.connection_weights = self.optimizer.compute_connection_weights()
 
     # retrieval using conceptors
@@ -95,12 +97,15 @@ class Simulation:
         return ts
 
     # check whether the pattern has been encoded in the reservoir some washout time
-    def test(self):
+    def test(self, with_conceptor=False):
         ts = []
         for j, pattern in enumerate(self.patterns):
             test_run = []
-            for p_n, n in enumerate(pattern):
-                self.next_step_with_input(n)
+            for n, p_n in enumerate(pattern):
+                if with_conceptor:
+                    self.next_step_with_input(p_n, self.rnn.conceptors[j].C)
+                else:
+                    self.next_step_with_input(p_n)
                 test_run.append(self.rnn.get_output())
             ts.append(test_run)
         return ts
