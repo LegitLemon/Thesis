@@ -15,7 +15,7 @@ class Optimiser:
         self.P = None
 
         self.rho_Wout = 0.01
-        self.rho_W = 0.01
+        self.rho_W = 0.0001
         self.lamb = 0.001
 
     # perform a ridge regression with constant rho, and return the analytic solution
@@ -50,7 +50,13 @@ class Optimiser:
                 X_tilde = np.hstack((X_tilde, X_j))
 
         B = self.get_bias_matrix()
-        W_opt = self.ridge_regression(X_tilde, B, self.rho_W)
+
+        val2 = (np.arctanh(self.X)-B)
+        print("X: ",self.X.shape)
+        print("B: ", B.shape)
+        print("X,tilde: ", X_tilde.shape)
+        W_opt = self.ridge_regression(X_tilde, val2, self.rho_W)
+        print("Opt: ", W_opt.shape)
         return W_opt
 
     def get_bias_matrix(self):

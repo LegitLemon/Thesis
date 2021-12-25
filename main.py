@@ -2,21 +2,18 @@ from Simulation import Simulation
 import matplotlib.pyplot as plt
 
 def main():
-    T = 200
-    washout_time = 100
+    T = 1500
+    washout_time = 500
     N_neurons = 100
-    aperture = 1
+    aperture = 100
 
     simulation = Simulation(N=N_neurons, T=T, washout_time=washout_time, aperture=aperture)
 
+    # do you want to store the patterns in the reservoir
     # load patterns into reservoir
-    simulation.load(loaded=False)
+    simulation.load(load_patterns=True)
 
-    # compute conceptors
-    simulation.load(loaded=True)
-
-    #
-    tr = simulation.test()
+    tr = simulation.autonomous()
 
     patterns = simulation.init_patterns()
 

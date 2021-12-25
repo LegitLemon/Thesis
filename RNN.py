@@ -37,10 +37,7 @@ class RNN:
             row = []
             # The matrix has N columns
             for j in range(self.N):
-                w_ij = np.random.normal(0.5, 0.5)
-                # weights should be normally distributed [0,1]
-                while w_ij < 0 or (w_ij > 1):
-                    w_ij = np.random.normal(0.5, 0.5)
+                w_ij = np.random.normal(0, 1)
                 row.append(w_ij)
             connection_weights.append(row)
 
