@@ -20,7 +20,7 @@ class Optimiser:
 
     # perform a ridge regression with constant rho, and return the analytic solution
     def ridge_regression(self, X, P, rho):
-        W_1 = np.linalg.inv((np.dot(X, X.transpose()) + rho*np.identity(self.N)))
+        W_1 = np.linalg.inv((np.dot(X, X.T) + rho*np.identity(self.N)))
         W_opt = (W_1.dot(X).dot(P.transpose())).transpose()
         return W_opt
 
@@ -30,16 +30,19 @@ class Optimiser:
         X = self.state_collection_matrices[0]
         for i, X_j in enumerate(self.state_collection_matrices):
             if i != 0:
-                X = np.hstack((X, X_j))
+                X = np.vstack((X, X_j))
+        print("X: ", X.shape)
         self.X = X
 
         # append all pattern matrices
         P = np.array(self.patterns[0][-(self.T-self.washout_time):])
         for i, P_j in enumerate(self.patterns):
+            print(np.array(P_j).shape)
             if i != 0:
-                P = np.hstack((P, np.array(P_j[-(self.T-self.washout_time):])))
+                P = np.vstack((P, np.array(P_j[-(self.T-self.washout_time):])))
 
-        self.P = P
+        print("P: ", P.shape)
+        self.P = P.T
         return self.ridge_regression(X, P, self.rho_Wout)
 
     def compute_connection_weights(self):
@@ -47,11 +50,11 @@ class Optimiser:
         X_tilde = self.state_collection_matrices[0]
         for i, X_j in enumerate(self.delayed_state_matrices):
             if i > 0:
-                X_tilde = np.hstack((X_tilde, X_j))
+                X_tilde = np.vstack((X_tilde, X_j))
 
         B = self.get_bias_matrix()
 
-        val2 = (np.arctanh(self.X)-B)
+        val2 = np.arctanh(self.X)-B
         print("X: ",self.X.shape)
         print("B: ", B.shape)
         print("X,tilde: ", X_tilde.shape)

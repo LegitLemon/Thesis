@@ -22,7 +22,7 @@ class Simulation:
     # Sample 4 different one dimensional signals
     def init_patterns(self):
         patterns = []
-        # Consider the following signal p(n)=sin(2pin/(10sqrt())) sampled for 1000 steps of n
+
         patterns.append([np.sin(2*n/(10*np.sqrt(2))) for n in range(self.T)])
 
         # Square Wave
@@ -63,19 +63,19 @@ class Simulation:
             for idx, p in enumerate(pattern):
                 # debug
                 self.next_step_with_input(p)
-                state = np.array(self.rnn.reservoir)
+                state = np.array(self.rnn.reservoir).T
                 if idx == self.washout_time:
                     state_matrix = state
-                if idx>self.washout_time:
-                    state_matrix = np.c_[state_matrix, state]
+                if idx > self.washout_time:
+                    state_matrix = np.concatenate((state_matrix, state), axis=0)
                 if idx == self.washout_time-1:
                     delayed_state = state
                 if idx > self.washout_time-1 and idx<self.T-1:
-                    delayed_state = np.c_[delayed_state, state]
-            #delayed_state = np.c_[delayed_state, state]
+                    delayed_state = np.concatenate((delayed_state, state), axis=0)
             print("finished driving pattern: ", j)
-            print(state.shape)
-            R = np.dot(state_matrix, state_matrix.transpose()) / self.N
+            print(state_matrix.shape)
+            R = np.dot(state_matrix.T, state_matrix)/self.N
+            print()
             self.rnn.conceptors.append(Conceptor(R, self.alpha, self.N))
             self.optimizer.state_collection_matrices.append(state_matrix)
             self.optimizer.delayed_state_matrices.append(delayed_state)
