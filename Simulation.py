@@ -1,3 +1,5 @@
+import random
+
 from RNN import RNN
 import numpy as np
 from scipy import signal
@@ -61,18 +63,16 @@ class Simulation:
             self.rnn.init_reservoir()
             print("Driving pattern: ", j)
             for idx, p in enumerate(pattern):
-                # debug
-                self.next_step_with_input(p)
                 state = np.array(self.rnn.reservoir)
                 if idx == self.washout_time:
                     state_matrix = state
-                if idx>self.washout_time:
+                if idx > self.washout_time:
                     state_matrix = np.c_[state_matrix, state]
                 if idx == self.washout_time-1:
-                    delayed_state = state
-                if idx > self.washout_time-1 and idx<self.T-1:
+                    delayed_state = np.array(self.rnn.reservoir)
+                if idx > self.washout_time-1 and idx< self.T-1:
                     delayed_state = np.c_[delayed_state, state]
-            #delayed_state = np.c_[delayed_state, state]
+                self.next_step_with_input(p)
             print("finished driving pattern: ", j)
             print(state.shape)
             R = np.dot(state_matrix, state_matrix.transpose()) / self.N
@@ -86,15 +86,24 @@ class Simulation:
 
     # retrieval using conceptors
     def autonomous(self):
+        test1, test2, test3 = [], [] ,[]
+        n1, n2, n3 = random.randrange(0, 99), random.randrange(0, 99), random.randrange(0, 99)
         ts = []
         for j in range(len(self.patterns)):
             self.rnn.init_reservoir()
             test_run = []
+            ts1, ts2, ts3 = [], [], []
             for n in range(self.T):
                 self.next_step_without_input(self.rnn.conceptors[j].C)
                 test_run.append(self.rnn.get_output())
+                ts1.append(self.rnn.reservoir[n1])
+                ts2.append(self.rnn.reservoir[n2])
+                ts3.append(self.rnn.reservoir[n3])
             ts.append(test_run)
-        return ts
+            test1.append(ts1)
+            test2.append(ts2)
+            test3.append(ts3)
+        return ts, test1, test2, test3
 
     # check whether the pattern has been encoded in the reservoir some washout time
     def test(self, with_conceptor=False):

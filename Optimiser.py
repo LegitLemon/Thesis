@@ -15,7 +15,7 @@ class Optimiser:
         self.P = None
 
         self.rho_Wout = 0.01
-        self.rho_W = 0.0001
+        self.rho_W = 0.1
         self.lamb = 0.001
 
     # perform a ridge regression with constant rho, and return the analytic solution
@@ -44,14 +44,12 @@ class Optimiser:
 
     def compute_connection_weights(self):
         print("Computing optimal starting weights")
-        X_tilde = self.state_collection_matrices[0]
+        X_tilde = self.delayed_state_matrices[0]
         for i, X_j in enumerate(self.delayed_state_matrices):
-            if i > 0:
+            if i != 0:
                 X_tilde = np.hstack((X_tilde, X_j))
-
         B = self.get_bias_matrix()
-
-        val2 = (np.arctanh(self.X)-B)
+        val2 = np.arctanh(self.X)-B
         print("X: ",self.X.shape)
         print("B: ", B.shape)
         print("X,tilde: ", X_tilde.shape)

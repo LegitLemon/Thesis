@@ -21,7 +21,7 @@ class RNN:
         self.output_weights = np.random.normal(0, 1, size=(1, self.N))
 
         # bias vector, b \in R_N
-        self.bias = np.random.normal(.2, 0, size=(self.N, 1))
+        self.bias = np.random.normal(loc=0, scale=0.2, size=(self.N, 1))
 
         self.conceptors = []
 
@@ -29,7 +29,7 @@ class RNN:
         self.reservoir = np.random.normal(0, 1, size=(self.N, 1))
 
     # Initialise Connection weights, W \in R_{NxN}, w_{ij} reflects connection strength from x_j to x_i [0,1]
-    def init_connection_weights(self):
+    def init_connection_weights(self, rho=1):
         connection_weights = []
 
         # The matrix has N rows
@@ -43,10 +43,11 @@ class RNN:
 
         connection_weights = np.matrix(connection_weights)
 
-        min_eigvalues = min(LA.eigvals(connection_weights))
-        max_eigvalues = max(LA.eigvals(connection_weights))
-        # scale eigenvalues of matrix s.t it has the ESP
-        connection_weights = (connection_weights-((min_eigvalues.real+max_eigvalues.real)/2)*np.identity(self.N))/((max_eigvalues.real-min_eigvalues.real)/2)
+        current_rho = max(abs(np.linalg.eig(connection_weights)[0]))
+        connection_weights *= rho / current_rho
+        #min_eigvalues = min(LA.eigvals(connection_weights))
+        #max_eigvalues = max(LA.eigvals(connection_weights))
+        #connection_weights = (connection_weights-((min_eigvalues.real+max_eigvalues.real)/2)*np.identity(self.N))/((max_eigvalues.real-min_eigvalues.real)/2)
         return connection_weights
 
     def get_output(self):
