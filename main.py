@@ -1,5 +1,3 @@
-import random
-
 from brian2 import *
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,7 +16,6 @@ def main():
     reset = "v=0"
     tau = 5*ms
     delta = 5*ms
-    # LIF under constant injection of 0.05
     eqs = '''
     dv/dt = -(v-I)/tau: 1 (unless refractory)
     I = sin(t/delta) : 1
@@ -34,12 +31,11 @@ def main():
 
     # Make synapses between neurons
     weight_eq = "w : 1"
-    S = Synapses(G, G, weight_eq, on_pre="v_post += w")
+    impuls_eq = "v_post += w"
+    S = Synapses(G, G, weight_eq, on_pre=impuls_eq)
     initWeights(S, N)
-
     run(T)
 
-    print(len(spikemon.t))
     # Analytics trackers
     plt.plot(statemon_neuron.t, statemon_neuron.v[0], label="spiking neuron")
     plt.plot(statemon_input.t, statemon_input.I[0], label="output")
