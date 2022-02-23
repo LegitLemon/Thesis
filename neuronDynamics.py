@@ -1,15 +1,18 @@
+# Parameters taken from (Maass, 2002)
+
 from brian2 import *
 
-N_liquid = 100
+N_liquid = 135
 N_output = 20
 
 # Neuron Parameters
-refrac = 5 * ms
-thres = "v>0.2"
-reset = "v=0"
-tau = 5 * ms
+refrac = 3 * ms
+thres = "v>.15 mV"
+reset = "v=13.5 mV"
+tau = 30 * ms
 delta = 5 * ms
+
 eqs = '''
-dv/dt = -(v-I)/tau: 1 (unless refractory)
-I = sin(t/delta) : 1
+dv/dt = -(v-I)/tau: volt (unless refractory)
+I = 15.5 nV: 1
 '''
