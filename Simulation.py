@@ -7,3 +7,4 @@ class Simulation():
         self.spikeTrain = None
         self.liquid = Liquid()
         self.outputPop = OutputPopulation()
+        self.outputSynapses = Synapses(self.liquid.liquid, self.outputPop.outputPopulation, model="w:volt", on_pre="v += w")

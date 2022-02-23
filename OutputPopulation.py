@@ -3,7 +3,7 @@ import neuronDynamics as nd
 
 class OutputPopulation():
     def __init__(self):
-        self.outputPopulation = NeuronGroup(N=nd.N_liquid, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
+        self.outputPopulation = NeuronGroup(N=nd.N_output, model=nd.eqsOut, refractory=nd.refracOut, reset=nd.resetOut)
 
     def getReadout(self):
         pass
