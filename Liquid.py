@@ -19,8 +19,11 @@ class Liquid():
         # compute the amount of inhibitory connections
         amount = int(0.2*nd.N_liquid)
         # Set that amount of neurons to inhibitory
+        indeces = []
         for x in range(amount):
             ind = random.randint(0, nd.N_liquid)
+            while ind in indeces:
+                ind = random.randint(0, nd.N_liquid)
             neuronTypes[ind] = True
         return neuronTypes
 
@@ -82,6 +85,3 @@ class Liquid():
                     value = random.random()
                 self.synapses.connect(neuronFrom, neuronTo)
                 self.synapses[neuronFrom, neuronTo] = value
-
-    def getLiquidState(self):
-        pass

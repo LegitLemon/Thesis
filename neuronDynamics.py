@@ -32,3 +32,11 @@ I = 13.5 nV: 1
 ## Parameters for setting connection
 # lam = [2,4,8] in paper
 lam = 2
+
+
+##
+binSize = 20
+
+
+## Poisson Group simulation
+poissonNum = 100
