@@ -12,6 +12,7 @@ class Liquid():
         self.neurontypes = self.initNeuronTypes()
         self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
+        self.spikemonitor = SpikeMonitor(self.liquid)
         print("starting LSM synapses")
         self.initSynapses()
         print("connected LSM synapses")

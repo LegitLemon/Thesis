@@ -26,6 +26,7 @@ class Simulation():
         self.network.add(self.liquid.synapses)
         self.network.add(self.outputPop.outputPopulation)
         self.network.add(self.outputSynapses)
+        self.network.add(self.outputPop.spikeMonitor)
 
     def initInputSynapses(self):
         print("making Connection to input LSM")
@@ -48,7 +49,7 @@ class Simulation():
 
     def run(self):
         print("starting simulation")
-        self.network.run(3*second, report=ProgressBar(), report_period=1*second)
+        self.network.run(1*second, report=ProgressBar(), report_period=0.2*second)
         self.outputPop.getReadout(0)
 
 

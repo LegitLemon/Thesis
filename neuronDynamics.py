@@ -14,7 +14,7 @@ delta = 5 * ms
 weightEQ = "v += w"
 eqs = '''
 dv/dt = -(v-I)/(30*ms): volt (unless refractory)
-I = 0.155 * mV: volt
+I = 0.000155 * mV: volt
 '''
 
 # Neuron parameters in output
@@ -26,7 +26,7 @@ deltaOut = 5 * ms
 weightEQOut = "v += w"
 eqsOut = '''
 dv/dt = -(v-I)/(30*ms): volt (unless refractory)
-I = 0.135 * mV: volt
+I = 0.000135 * mV: volt
 '''
 
 ## Parameters for setting connection
