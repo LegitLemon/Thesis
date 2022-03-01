@@ -8,22 +8,27 @@ import random
 class Liquid():
 
     def __init__(self):
+        print("Making new LSM")
         self.neurontypes = self.initNeuronTypes()
-        self.liquid = NeuronGroup(N=nd.N_liquid, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
-        self.synapses = Synapses(self.liquid, self.liquid, on_pre=nd.weightEQ)
+        self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
+        self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
+        print("starting LSM synapses")
         self.initSynapses()
+        print("connected LSM synapses")
 
     def initNeuronTypes(self):
         # initialise all neurons to be excitatory
-        neuronTypes = [False for x in range(len(nd.N_liquid))]
+        neuronTypes = [False for x in range(nd.N_liquid)]
         # compute the amount of inhibitory connections
         amount = int(0.2*nd.N_liquid)
         # Set that amount of neurons to inhibitory
         indeces = []
         for x in range(amount):
-            ind = random.randint(0, nd.N_liquid)
+            ind = random.randint(0, nd.N_liquid-1)
+
             while ind in indeces:
-                ind = random.randint(0, nd.N_liquid)
+                ind = random.randint(0, nd.N_liquid-1)
+            indeces.append(ind)
             neuronTypes[ind] = True
         return neuronTypes
 
@@ -73,15 +78,11 @@ class Liquid():
 
         prob = C * exp(exponent)
         if random.random() < prob:
-            if self.neurontypes[neuronFrom] == True:
-                value = random.random()
-                while(value <0):
-                    value = random.random()
-                self.synapses.connect(neuronFrom, neuronTo)
-                self.synapses[neuronFrom, neuronTo] = value
-            else:
-                value = random.random()
-                while(value > 0):
-                    value = random.random()
-                self.synapses.connect(neuronFrom, neuronTo)
-                self.synapses[neuronFrom, neuronTo] = value
+            value = random.random()
+            if self.neurontypes[neuronFrom] == False:
+                value *= -1
+            self.synapses.connect(j=neuronFrom, i=neuronTo)
+            self.synapses.w[neuronFrom, neuronTo] = value * mV
+
+    def reset(self):
+        self.liquid.v = "random.uniform(13,5 ,15) * mV"

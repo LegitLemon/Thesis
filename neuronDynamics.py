@@ -14,7 +14,7 @@ delta = 5 * ms
 weightEQ = "v += w"
 eqs = '''
 dv/dt = -(v-I)/tau: volt (unless refractory)
-I = 15.5 nV: 1
+I = 15.5 * nV: volt
 '''
 
 # Neuron parameters in output

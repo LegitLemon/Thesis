@@ -1,9 +1,8 @@
-from brian2 import *
-import matplotlib.pyplot as plt
-import numpy as np
-
+from Simulation import Simulation
 
 def main():
+    simulation = Simulation()
+    simulation.run()
     pass
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from brian2 import *
 import neuronDynamics as nd
 import random
 import numpy as np
+from ProgressBar import ProgressBar
 
 class Simulation():
     def __init__(self):
@@ -20,19 +21,23 @@ class Simulation():
         amount = int(0.3*nd.N_liquid)
         indeces = []
         for i in range(amount):
-            index = random.randint(0, nd.N_liquid)
+            index = random.randint(0, nd.N_liquid-1)
             while index in indeces:
-                index = random.randint(0, nd.N_liquid)
+                #print("hoi")
+                index = random.randint(0, nd.N_liquid-1)
+            indeces.append(index)
             weight = random.random()
             self.inputSynapses.connect(np.arrange(nd.poissonNum), index)
             self.inputSynapses.w[:, index] = weight
 
     def initOutputSynapses(self):
+        print("Making input connections to LSM")
         self.inputSynapses.connect(np.arrange(nd.N_liquid), np.arrange(nd.N_output))
         self.inputSynapses.w[:, :] = 1
 
     def run(self):
-        run(20*ms)
+        print("starting simulation")
+        run(report=ProgressBar(), report_period=1*second)
         self.outputPop.getReadout(0)
 
 
