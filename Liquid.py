@@ -81,7 +81,7 @@ class Liquid():
             value = random.random()
             if self.neurontypes[neuronFrom] == False:
                 value *= -1
-            self.synapses.connect(j=neuronFrom, i=neuronTo)
+            self.synapses.connect(i=neuronFrom, j=neuronTo)
             self.synapses.w[neuronFrom, neuronTo] = value * mV
 
     def reset(self):

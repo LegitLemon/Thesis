@@ -7,26 +7,26 @@ N_output = 51
 
 # Neuron Parameters in liquid
 refrac = 3 * ms
-thres = "v>= .15 mV"
-reset = "v=13.5 mV"
+thres = "v>= .15 * mV"
+reset = "v= 13.5 * mV"
 tau = 30 * ms
 delta = 5 * ms
 weightEQ = "v += w"
 eqs = '''
-dv/dt = -(v-I)/tau: volt (unless refractory)
-I = 15.5 * nV: volt
+dv/dt = -(v-I)/(30*ms): volt (unless refractory)
+I = 0.155 * mV: volt
 '''
 
 # Neuron parameters in output
 refracOut = 3 * ms
-thresOut = "v>= .15 mV"
-resetOut = "v=13.5 mV"
+thresOut = "v>= .15 * mV"
+resetOut = "v=13.5 * mV"
 tauOut = 30 * ms
 deltaOut = 5 * ms
 weightEQOut = "v += w"
 eqsOut = '''
-dv/dt = -(v-I)/tau: volt (unless refractory)
-I = 13.5 nV: 1
+dv/dt = -(v-I)/(30*ms): volt (unless refractory)
+I = 0.135 * mV: volt
 '''
 
 ## Parameters for setting connection
