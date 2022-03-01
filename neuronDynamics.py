@@ -26,12 +26,9 @@ deltaOut = 5 * ms
 weightEQOut = "v += w"
 eqsOut = '''
 dv/dt = -(v-I)/tau: volt (unless refractory)
-I = 15.5 nV: 1
+I = 13.5 nV: 1
 '''
 
 ## Parameters for setting connection
 # lam = [2,4,8] in paper
 lam = 2
-
-# C dependent on neurontype in Paper
-C = 0.3
