@@ -3,7 +3,7 @@
 from brian2 import *
 
 N_liquid = 135
-N_output = 51
+N_output = 55
 
 # Neuron Parameters in liquid
 refrac = 3 * ms
@@ -14,19 +14,18 @@ delta = 5 * ms
 weightEQ = "v += w"
 eqs = '''
 dv/dt = -(v-I)/(30*ms): volt (unless refractory)
-I = 0.000155 * mV: volt
+I = 13.5 * nvolt: volt
 '''
 
 # Neuron parameters in output
-refracOut = 3 * ms
+refracOut = 0 * ms
 thresOut = "v>= .15 * mV"
-resetOut = "v=13.5 * mV"
 tauOut = 30 * ms
 deltaOut = 5 * ms
 weightEQOut = "v += w"
 eqsOut = '''
-dv/dt = -(v-I)/(30*ms): volt (unless refractory)
-I = 0.000135 * mV: volt
+dv/dt = -(v-I)/(30*ms): volt 
+I = 13.5 * nvolt: volt
 '''
 
 ## Parameters for setting connection

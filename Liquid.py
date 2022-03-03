@@ -1,6 +1,7 @@
 # class representing the liquid in the LSM implementation
 import random
 
+import numpy as np
 from brian2 import *
 import neuronDynamics as nd
 import random
@@ -13,6 +14,7 @@ class Liquid():
         self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
+        self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.arange(5))
         print("starting LSM synapses")
         self.initSynapses()
         print("connected LSM synapses")
@@ -79,11 +81,22 @@ class Liquid():
 
         prob = C * exp(exponent)
         if random.random() < prob:
-            value = random.random()
+            if self.neurontypes[neuronFrom] is True:
+                if self.neurontypes[neuronTo] is True:
+                    value = 19 * nvolt
+                else:
+                    value = 19 * nvolt
+            else:
+                if self.neurontypes[neuronTo] is True:
+                    value = 60 * nvolt
+                else:
+                    value = 30 * nvolt
+
             if self.neurontypes[neuronFrom] == False:
                 value *= -1
             self.synapses.connect(i=neuronFrom, j=neuronTo)
-            self.synapses.w[neuronFrom, neuronTo] = value * mV
+            self.synapses.w[neuronFrom, neuronTo] = value
 
     def reset(self):
-        self.liquid.v = "random.uniform(13,5 ,15) * mV"
+        for i in range(nd.N_liquid):
+            self.liquid.v[i] = random.uniform(13.5, 15) * mV
