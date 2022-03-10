@@ -6,12 +6,14 @@ import random
 import numpy as np
 from ProgressBar import ProgressBar
 import matplotlib.pyplot as plt
+from Optimizer import Optimizer
 
 class Simulation():
     def __init__(self):
         self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 10*Hz)
         self.inputMonitor = SpikeMonitor(self.poissonInput)
         self.liquid = Liquid()
+        self.optim = Optimizer()
         self.inputSynapses = Synapses(self.poissonInput, self.liquid.liquid, model="w:volt", on_pre="v += w")
         self.initInputSynapses()
 
@@ -62,6 +64,7 @@ class Simulation():
         print("starting simulation")
         self.liquid.reset()
         self.network.run(5*second, report=ProgressBar(), report_period=0.2*second)
+        self.optim.stateMatrices.append(self.outputPop.getStateMatrix())
 
         fig1 = plt.figure(1)
         plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
