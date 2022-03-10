@@ -49,40 +49,48 @@ class Simulation():
             while index in indeces:
                 index = random.randint(0, nd.N_liquid-1)
             indeces.append(index)
-            weight = random.random()
-            self.inputSynapses.connect(j=index, i=np.arange(nd.poissonNum))
-            self.inputSynapses.w[:, index] = weight * mV
+            self.inputSynapses.connect(i=np.arange(nd.poissonNum), j=index)
+            self.inputSynapses.w[:, index] = 15 * mV
 
     def initOutputSynapses(self):
         print("Making output connections to outputPopulation")
         for i in range(nd.N_liquid):
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
-            if self.liquid.neurontypes[i] == False:
-                self.outputSynapses.w[:, i] = 18 * nvolt
-            else:
-                self.outputSynapses.w[:, i] = 9 * nvolt
-
+            self.outputSynapses.w[i, :] = 2 * mV
 
     def run(self):
         print("starting simulation")
         self.liquid.reset()
-        self.network.run(1*second, report=ProgressBar(), report_period=0.2*second)
+        self.network.run(5*second, report=ProgressBar(), report_period=0.2*second)
 
         fig1 = plt.figure(1)
         plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
+        plt.title(label="Input spike train")
+        plt.xlabel(xlabel="time in s")
+        plt.ylabel(ylabel="injected voltage")
 
         fig2 = plt.figure(2)
         plt.plot(self.outputPop.spikeMonitor.t / ms, self.outputPop.spikeMonitor.i, 'k')
-        plt.show()
+        plt.title(label="output population spikes")
+        plt.xlabel(xlabel="time in s")
+        plt.ylabel(ylabel="output voltage")
 
         fig3 = plt.figure(3)
         for j in range(5):
             plt.plot(self.liquid.stateMonitor.t / ms, self.liquid.stateMonitor.v[j])
-        plt.show()
+        plt.title(label="neuron voltage of select liquid neurons")
+        plt.xlabel(xlabel="time in s")
+        plt.ylabel(ylabel="membrane voltage")
+
+
 
         fig4 = plt.figure(4)
         for j in range(5):
             plt.plot(self.liquid.spikemonitor.t / ms, self.liquid.spikemonitor.i)
+        plt.title(label="Spiking activity of select liquid neurons")
+        plt.xlabel(xlabel="time in s")
+        plt.ylabel(ylabel="output voltage")
+
         plt.show()
 
 

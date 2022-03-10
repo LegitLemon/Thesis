@@ -14,7 +14,7 @@ class Liquid():
         self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
-        self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.arange(5))
+        self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, 134, 5))
         print("starting LSM synapses")
         self.initSynapses()
         print("connected LSM synapses")
@@ -81,18 +81,8 @@ class Liquid():
 
         prob = C * exp(exponent)
         if random.random() < prob:
-            if self.neurontypes[neuronFrom] is True:
-                if self.neurontypes[neuronTo] is True:
-                    value = 19 * nvolt
-                else:
-                    value = 19 * nvolt
-            else:
-                if self.neurontypes[neuronTo] is True:
-                    value = 60 * nvolt
-                else:
-                    value = 30 * nvolt
-
-            if self.neurontypes[neuronFrom] == False:
+            value = 7 * mV
+            if self.neurontypes[neuronFrom] == True:
                 value *= -1
             self.synapses.connect(i=neuronFrom, j=neuronTo)
             self.synapses.w[neuronFrom, neuronTo] = value

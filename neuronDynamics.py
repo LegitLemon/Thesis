@@ -7,7 +7,7 @@ N_output = 55
 
 # Neuron Parameters in liquid
 refrac = 3 * ms
-thres = "v>= .15 * mV"
+thres = "v>= 15 * mV"
 reset = "v= 13.5 * mV"
 tau = 30 * ms
 delta = 5 * ms
@@ -19,7 +19,7 @@ I = 13.5 * nvolt: volt
 
 # Neuron parameters in output
 refracOut = 0 * ms
-thresOut = "v>= .15 * mV"
+thresOut = "v>= 15 * mV"
 tauOut = 30 * ms
 deltaOut = 5 * ms
 weightEQOut = "v += w"
@@ -38,4 +38,4 @@ binSize = 20
 
 
 ## Poisson Group simulation
-poissonNum = 100
+poissonNum = 1
