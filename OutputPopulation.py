@@ -8,6 +8,28 @@ class OutputPopulation():
         self.spikeMonitor = SpikeMonitor(self.outputPopulation)
         print("constructed output population")
 
-    def getReadout(self, t):
+    def computeBinnedActivity(self):
         trains = self.spikeMonitor.spike_trains()
+        binnedActivity = []
+        for neuron in trains.keys():
+            print(neuron)
+            currentSpiketrain = trains[neuron]
+            binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
         print(trains)
+
+    def computeBinnedSpiketrain(self, spiketrain):
+        binnedActivity = []
+        upperbound = 0 * ms
+        lowerbound = nd.binSize
+        while(upperbound < nd.simLength):
+            spikeCount = 0
+            for spike in spiketrain:
+                if spike >= lowerbound and spike <= upperbound:
+                    spikeCount += 1
+
+            spikerate = spikeCount / (nd.binSize/ms)
+            binnedActivity.append(spikerate)
+            upperbound += nd.binSize
+            lowerbound += nd.binSize
+        return binnedActivity
+

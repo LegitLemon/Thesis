@@ -81,7 +81,7 @@ class Liquid():
 
         prob = C * exp(exponent)
         if random.random() < prob:
-            value = 7 * mV
+            value = nd.liquidSynapseStrength
             if self.neurontypes[neuronFrom] == True:
                 value *= -1
             self.synapses.connect(i=neuronFrom, j=neuronTo)
@@ -90,3 +90,30 @@ class Liquid():
     def reset(self):
         for i in range(nd.N_liquid):
             self.liquid.v[i] = random.uniform(13.5, 15) * mV
+
+    def computeBinnedActivity(self):
+        trains = self.spikeMonitor.spike_trains()
+        binnedActivity = []
+        for neuron in trains.keys():
+            print(neuron)
+            currentSpiketrain = trains[neuron]
+            binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
+        print(trains)
+
+    def computeBinnedSpiketrain(self, spiketrain):
+        binnedActivity = []
+        upperbound = 0 * ms
+        lowerbound = nd.binSize
+        while(upperbound < nd.simLength):
+            spikeCount = 0
+            for spike in spiketrain:
+                if spike >= lowerbound and spike <= upperbound:
+                    spikeCount += 1
+
+            spikerate = spikeCount / (nd.binSize/ms)
+            binnedActivity.append(spikerate)
+            upperbound += nd.binSize
+            lowerbound += nd.binSize
+        return binnedActivity
+
+
