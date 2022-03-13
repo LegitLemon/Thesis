@@ -13,8 +13,8 @@ tau = 30 * ms
 delta = 5 * ms
 weightEQ = "v += w"
 eqs = '''
-dv/dt = -(v-I)/(30*ms): volt (unless refractory)
-I = 13.5 * nvolt: volt
+dv/dt = -(v-13.5*mV)/(30*ms) + ((30*mohm)*I)/(30*ms): volt (unless refractory)
+I = 13.5 * nampere: ampere
 '''
 
 # Neuron parameters in output
@@ -24,8 +24,8 @@ tauOut = 30 * ms
 deltaOut = 5 * ms
 weightEQOut = "v += w"
 eqsOut = '''
-dv/dt = -(v-I)/(30*ms): volt 
-I = 13.5 * nvolt: volt
+dv/dt = -(v-13.5*mV)/(30*ms) + ((30*mohm)*I)/(30*ms): volt (unless refractory)
+I = 13.5 * nampere: ampere
 '''
 
 ## Parameters for setting connection

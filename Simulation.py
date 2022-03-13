@@ -58,6 +58,9 @@ class Simulation():
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
             self.outputSynapses.w[i, :] = 2 * mV
 
+    def rasterPLot(self, sim_data):
+        pass
+
     def run(self):
         print("starting simulation")
         self.liquid.reset()
