@@ -1,7 +1,7 @@
-from Liquid import Liquid
-from OutputPopulation import OutputPopulation
+from LSM.Liquid import Liquid
+from LSM.OutputPopulation import OutputPopulation
 from brian2 import *
-import neuronDynamics as nd
+from LSM import neuronDynamics as nd
 import random
 import numpy as np
 from ProgressBar import ProgressBar
