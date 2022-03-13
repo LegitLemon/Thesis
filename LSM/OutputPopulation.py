@@ -15,7 +15,6 @@ class OutputPopulation():
             print(neuron)
             currentSpiketrain = trains[neuron]
             binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
-        print(trains)
 
     def computeBinnedSpiketrain(self, spiketrain):
         binnedActivity = []

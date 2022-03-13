@@ -7,6 +7,7 @@ import numpy as np
 from ProgressBar import ProgressBar
 import matplotlib.pyplot as plt
 from brian2tools import *
+from Classification.Classifier import Classifier
 
 class Simulation():
     def __init__(self):
@@ -21,6 +22,8 @@ class Simulation():
         self.initOutputSynapses()
         self.network = Network()
         self.initNetwork()
+
+        self.classifier = Classifier()
 
     def initNetwork(self):
         print("Compiling network")
@@ -59,31 +62,30 @@ class Simulation():
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
             self.outputSynapses.w[i, :] = nd.liquidOutputSynapseStrength
 
-    def rasterPLot(self, spike_monitor):
-        brian_plot(spike_monitor)
+    def resetInput(self):
+        self.classifier.inputSpikeTrains.append((self.poissonInput, self.inputMonitor))
+        self.network.remove(self.inputMonitor)
+        self.network.remove(self.poissonInput)
+        self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum) * Hz + 10 * Hz)
+        self.inputMonitor = SpikeMonitor(self.poissonInput)
+        self.network.add(self.poissonInput)
+        self.network.add(self.inputMonitor)
 
-    def visualise_connectivity(self, S):
-        Ns = len(S.source)
-        Nt = len(S.target)
-        figure(figsize=(10, 4))
-        subplot(121)
-        plot(zeros(Ns), arange(Ns), 'ok', ms=10)
-        plot(ones(Nt), arange(Nt), 'ok', ms=10)
-        for i, j in zip(S.i, S.j):
-            plot([0, 1], [i, j], '-k')
-        xticks([0, 1], ['Source', 'Target'])
-        ylabel('Neuron index')
-        xlim(-0.1, 1.1)
-        ylim(-1, max(Ns, Nt))
-        subplot(122)
-        plot(S.i, S.j, 'ok')
-        xlim(-1, Ns)
-        ylim(-1, Nt)
-        xlabel('Source neuron index')
-        ylabel('Target neuron index')
+    def initClassifier(self):
+        print("Starting Classification Procedure, initialising conceptors")
+        amountOfPatterns = 3
+        for i in range(amountOfPatterns):
+            print("Running simulation on input pattern: ", i)
+            self.network.run(nd.simLength)
+            stateMatrix = self.liquid.computeBinnedActivity()
+            self.classifier.stateMatrices.append(stateMatrix)
+            self.resetInput()
+            self.network.restore()
+        self.classifier.computeConceptors()
+        print("Classifier Initialized")
 
     def run(self):
-        self.visualise_connectivity(self.liquid.synapses)
+        #self.visualise_connectivity(self.liquid.synapses)
         print("starting simulation")
         self.liquid.reset()
         self.network.run(1*second, report=ProgressBar(), report_period=0.2*second)
@@ -101,29 +103,5 @@ class Simulation():
 
         plot3 = brian_plot(self.liquid.stateMonitor)
         plt.show()
-
-
-        # fig2 = plt.figure(2)
-        # plt.plot(self.outputPop.spikeMonitor.t / ms, self.outputPop.spikeMonitor.i, 'k')
-        # plt.title(label="output population spikes")
-        # plt.xlabel(xlabel="time in s")
-        # plt.ylabel(ylabel="output voltage")
-
-        # fig3 = plt.figure(3)
-        # for j in range(5):
-        #     plt.plot(self.liquid.stateMonitor.t / ms, self.liquid.stateMonitor.v[j])
-        # plt.title(label="neuron voltage of select liquid neurons")
-        # plt.xlabel(xlabel="time in s")
-        # plt.ylabel(ylabel="membrane voltage")
-
-
-
-        # fig4 = plt.figure(4)
-        # for j in range(5):
-        #     plt.plot(self.liquid.spikemonitor.t / ms, self.liquid.spikemonitor.i)
-        # plt.title(label="Spiking activity of select liquid neurons")
-        # plt.xlabel(xlabel="time in s")
-        # plt.ylabel(ylabel="output voltage")
-        # plt.show()
 
 
