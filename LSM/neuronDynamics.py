@@ -8,9 +8,12 @@ N_liquid = 135
 N_output = 55
 
 ###
-liquidSynapseStrength = 0.5 * mV
+liquidSynapseStrength = 0.5
 liquidOutputSynapseStrength = 2 * mV
 inputLiquidSynapseStrength = 3 * mV
+
+###
+connecProb = 0.7
 
 # simulation length in seconds
 simLength = 5*second

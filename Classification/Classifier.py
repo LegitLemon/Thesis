@@ -1,4 +1,3 @@
-from Conceptor import Conceptor
 class Classifier:
     def __init__(self):
         self.stateMatrices = []

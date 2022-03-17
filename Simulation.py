@@ -1,7 +1,7 @@
 from LSM.Liquid import Liquid
 from LSM.OutputPopulation import OutputPopulation
 from brian2 import *
-from LSM import neuronDynamics as nd
+import LSM.neuronDynamics as nd
 import random
 import numpy as np
 from ProgressBar import ProgressBar
@@ -46,7 +46,7 @@ class Simulation():
 
     def initInputSynapses(self):
         print("making Connection to input LSM")
-        amount = int(0.3*nd.N_liquid)
+        amount = int(0.7*nd.N_liquid)
         indeces = []
         for i in range(amount):
             index = random.randint(0, nd.N_liquid-1)
@@ -54,13 +54,13 @@ class Simulation():
                 index = random.randint(0, nd.N_liquid-1)
             indeces.append(index)
             self.inputSynapses.connect(i=np.arange(nd.poissonNum), j=index)
-            self.inputSynapses.w[:, index] = nd.inputLiquidSynapseStrength
+            self.inputSynapses.w[:, index] = '1.25*rand()*mV'
 
     def initOutputSynapses(self):
         print("Making output connections to outputPopulation")
         for i in range(nd.N_liquid):
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
-            self.outputSynapses.w[i, :] = nd.liquidOutputSynapseStrength
+            self.outputSynapses.w[i, :] = '0.1*rand()*mV'
 
     def resetInput(self):
         self.classifier.inputSpikeTrains.append((self.poissonInput, self.inputMonitor))
@@ -85,7 +85,6 @@ class Simulation():
         print("Classifier Initialized")
 
     def run(self):
-        #self.visualise_connectivity(self.liquid.synapses)
         print("starting simulation")
         self.liquid.reset()
         self.network.run(1*second, report=ProgressBar(), report_period=0.2*second)

@@ -1,9 +1,6 @@
 # class representing the liquid in the LSM implementation
-import random
-
-import numpy as np
 from brian2 import *
-import neuronDynamics as nd
+import LSM.neuronDynamics as nd
 import random
 
 class Liquid():
@@ -15,9 +12,26 @@ class Liquid():
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
         self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, 134, 5))
+        self.connectionCount = 0
+        self.count = 0
         print("starting LSM synapses")
-        self.initSynapses()
-        print("connected LSM synapses")
+        self.synapses.connect(p=nd.connecProb)
+        self.synapses.w[:, :] = '0.3*rand()*mV'
+        amount = int(0.4*nd.N_liquid)
+        indeces = []
+        for x in range(amount):
+            ind = random.randint(0, nd.N_liquid-1)
+
+            while ind in indeces:
+                ind = random.randint(0, nd.N_liquid-1)
+            indeces.append(ind)
+            self.synapses.w[ind, :] = '-0.3*rand()*mV'
+        #self.initSynapses()
+        #print(self.count)
+        #print("Made ", self.connectionCount, " synapses in liquid")
+        #print("Average connection count: ", self.connectionCount/nd.N_liquid)
+        #print("connected LSM synapses")
+
 
     def initNeuronTypes(self):
         # initialise all neurons to be excitatory
@@ -45,6 +59,7 @@ class Liquid():
     def initSynapses(self):
         number = 0
         for z in range(9):
+            print(number)
             for y in range(3):
                 for x in range(3):
                     number += 1
@@ -60,32 +75,35 @@ class Liquid():
                     self.setConncetion(dist, neuronFrom, neuronTo)
 
     def setConncetion(self, dist, neuronFrom, neuronTo):
-        # Probabillity of a connection between a and b C*e^-(D(a,b)/lambda)^(2)
-        exponent = -1*(dist/nd.lam)
-        exponent = exponent ** 2
-
-        if self.neurontypes[neuronFrom] is True:
-            if self.neurontypes[neuronTo] is True:
-            # EE
-                C = 0.3
-            else:
-            # EI
-                C = 0.2
-        else:
-            if self.neurontypes[neuronTo] is True:
-            #IE
-                C = 0.4
-            else:
-            #II
-                C = 0.1
-
-        prob = C * exp(exponent)
-        if random.random() < prob:
-            value = nd.liquidSynapseStrength
+        # # Probabillity of a connection between a and b C*e^-(D(a,b)/lambda)^(2)
+        # exponent = -1*(dist/nd.lam)
+        # exponent = exponent ** 2
+        #
+        # if self.neurontypes[neuronFrom] is True:
+        #     if self.neurontypes[neuronTo] is True:
+        #     # EE
+        #         C = 0.3
+        #     else:
+        #     # EI
+        #         C = 0.2
+        # else:
+        #     if self.neurontypes[neuronTo] is True:
+        #     #IE
+        #         C = 0.4
+        #     else:
+        #     #II
+        #         C = 0.1
+        # prob = C * exp(exponent)
+        prob = 0.5
+        val = random.random()
+        self.count += 1
+        if val < prob:
+            self.connectionCount += 1
+            value = np.random.normal(loc=nd.liquidSynapseStrength, scale=0.5*nd.liquidSynapseStrength)
             if self.neurontypes[neuronFrom] == True:
                 value *= -1
             self.synapses.connect(i=neuronFrom, j=neuronTo)
-            self.synapses.w[neuronFrom, neuronTo] = value
+            self.synapses.w[neuronFrom, neuronTo] = value*mV
 
     def reset(self):
         for i in range(nd.N_liquid):
