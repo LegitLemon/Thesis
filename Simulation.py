@@ -11,7 +11,7 @@ from Classification.Classifier import Classifier
 
 class Simulation():
     def __init__(self):
-        self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 10*Hz)
+        self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 30*Hz)
         self.inputMonitor = SpikeMonitor(self.poissonInput)
         self.liquid = Liquid()
         self.inputSynapses = Synapses(self.poissonInput, self.liquid.liquid, model="w:volt", on_pre="v += w")
@@ -87,7 +87,7 @@ class Simulation():
     def run(self):
         print("starting simulation")
         self.liquid.reset()
-        self.network.run(1*second, report=ProgressBar(), report_period=0.2*second)
+        self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
         fig1 = plt.figure(1)
         plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
         plt.title(label="Input spike train")
