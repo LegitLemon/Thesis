@@ -46,7 +46,7 @@ class Simulation():
 
     def initInputSynapses(self):
         print("making Connection to input LSM")
-        amount = int(0.7*nd.N_liquid)
+        amount = int(nd.proportionInputInjectionLiquid*nd.N_liquid)
         indeces = []
         for i in range(amount):
             index = random.randint(0, nd.N_liquid-1)
@@ -74,17 +74,25 @@ class Simulation():
     def initClassifier(self):
         print("Starting Classification Procedure, initialising conceptors")
         amountOfPatterns = 1
-        for i in range(amountOfPatterns):
+        for i in range(nd.amountOfPatternsClassifier):
             print("Running simulation on input pattern: ", i)
-            self.network.run(nd.simLength)
-            stateMatrix = self.liquid.computeBinnedActivity()
-            print(stateMatrix)
-            self.classifier.stateMatrices.append(stateMatrix)
+            self.computeStateMatrix()
             # self.resetInput()
-            # self.network.restore()
-            self.plotRun()
         self.classifier.computeConceptors()
         print("Classifier Initialized")
+
+    def computeStateMatrix(self):
+        stateVectors = []
+        for i in range(nd.amountOfRunsPerPattern):
+            self.liquid.reset()
+            self.network.run(nd.simLength)
+            stateVector = self.liquid.computeStateMatrix(self.inputMonitor.t)
+            stateVectors.append(stateVector)
+            self.plotRun()
+            # self.network.restore()
+        stateMatrix = np.array(stateVectors)
+        self.classifier.stateMatrices.append(stateMatrix)
+
 
     def plotRun(self):
         fig1 = plt.figure(1)
@@ -107,19 +115,5 @@ class Simulation():
         self.liquid.reset()
         self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
         self.plotRun()
-        # fig1 = plt.figure(1)
-        # plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
-        # plt.title(label="Input spike train")
-        # plt.xlabel(xlabel="time in s")
-        # plt.ylabel(ylabel="injected voltage")
-        # plt.show()
-        #
-        # plot1 = brian_plot(self.outputPop.spikeMonitor)
-        # plt.show()
-        # plot2 = brian_plot(self.liquid.spikemonitor)
-        # plt.show()
-        #
-        # plot3 = brian_plot(self.liquid.stateMonitor)
-        # plt.show()
 
 

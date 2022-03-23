@@ -4,16 +4,17 @@ from brian2 import *
 
 ## Dimensionality of neurongroups
 poissonNum = 1
-N_liquid = 135
-N_output = 55
+N_liquid = 75
+N_output = 25
 
-###
-liquidSynapseStrength = 0.5
-liquidOutputSynapseStrength = 2 * mV
-inputLiquidSynapseStrength = 3 * mV
+
+amountOfPatternsClassifier = 1
+amountOfRunsPerPattern = 1
 
 ###
 connecProb = 0.7
+proportionInhib = 0.4
+proportionInputInjectionLiquid = 0.7
 
 # simulation length in seconds
 simLength = 5*second

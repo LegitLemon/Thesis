@@ -16,8 +16,9 @@ class Liquid():
         self.count = 0
         print("starting LSM synapses")
         self.synapses.connect(p=nd.connecProb)
-        self.synapses.w[:, :] = '0.3*rand()*mV'
-        amount = int(0.4*nd.N_liquid)
+        self.synapses.w[:, :] = '3*rand()*nvolt'
+
+        amount = int(nd.proportionInhib*nd.N_liquid)
         indeces = []
         for x in range(amount):
             ind = random.randint(0, nd.N_liquid-1)
@@ -25,12 +26,7 @@ class Liquid():
             while ind in indeces:
                 ind = random.randint(0, nd.N_liquid-1)
             indeces.append(ind)
-            self.synapses.w[ind, :] = '-0.3*rand()*mV'
-        #self.initSynapses()
-        #print(self.count)
-        #print("Made ", self.connectionCount, " synapses in liquid")
-        #print("Average connection count: ", self.connectionCount/nd.N_liquid)
-        #print("connected LSM synapses")
+            self.synapses.w[ind, :] = '-3*rand()*nvolt'
 
 
     def initNeuronTypes(self):
@@ -109,13 +105,27 @@ class Liquid():
         for i in range(nd.N_liquid):
             self.liquid.v[i] = random.uniform(13.5, 15) * mV
 
-    def computeBinnedActivity(self):
-        trains = self.spikemonitor.spike_trains()
+    def computeStateMatrix(self, inputSpikeTrain):
+        liquidSpiketrains = self.spikemonitor.spike_trains()
+        binnedLiquidStates = self.computeBinnedActivity(liquidSpiketrains)
+        binnedInputStates = self.computeBinnedActivity({"1": inputSpikeTrain})[0]
+        return self.compileStateMatrix(binnedInputStates, binnedLiquidStates)
+
+    def compileStateMatrix(self, inputTrain, liquidTrain):
+        stateVector = []
+        for binIndex in range(len(inputTrain)):
+            for i in range(len(liquidTrain)):
+                stateVector.append(liquidTrain[i][binIndex])
+            stateVector.append(inputTrain[binIndex])
+
+
+    def computeBinnedActivity(self, trains):
         binnedActivity = []
         for neuron in trains.keys():
             currentSpiketrain = trains[neuron]
             binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
-        print(trains)
+        return binnedActivity
+        # print(trains)
 
     def computeBinnedSpiketrain(self, spiketrain):
         binnedActivity = []
@@ -130,7 +140,7 @@ class Liquid():
                 if spike >= lowerbound and spike <= upperbound:
                     spikeCount += 1
             spikerate = spikeCount / (nd.binSize)
-            print(spikerate)
+            # print(spikerate)
             binnedActivity.append(spikerate)
             upperbound += nd.binSize
             lowerbound += nd.binSize
