@@ -11,7 +11,7 @@ from Classification.Classifier import Classifier
 
 class Simulation():
     def __init__(self):
-        self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 30*Hz)
+        self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 10*Hz)
         self.inputMonitor = SpikeMonitor(self.poissonInput)
         self.liquid = Liquid()
         self.inputSynapses = Synapses(self.poissonInput, self.liquid.liquid, model="w:volt", on_pre="v += w")
@@ -54,13 +54,13 @@ class Simulation():
                 index = random.randint(0, nd.N_liquid-1)
             indeces.append(index)
             self.inputSynapses.connect(i=np.arange(nd.poissonNum), j=index)
-            self.inputSynapses.w[:, index] = '1.25*rand()*mV'
+            self.inputSynapses.w[:, index] = '1.5*rand()*mV'
 
     def initOutputSynapses(self):
         print("Making output connections to outputPopulation")
         for i in range(nd.N_liquid):
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
-            self.outputSynapses.w[i, :] = '0.1*rand()*mV'
+            self.outputSynapses.w[i, :] = '1.5*rand()*mV'
 
     def resetInput(self):
         self.classifier.inputSpikeTrains.append((self.poissonInput, self.inputMonitor))
@@ -73,13 +73,15 @@ class Simulation():
 
     def initClassifier(self):
         print("Starting Classification Procedure, initialising conceptors")
-        amountOfPatterns = 1
         for i in range(nd.amountOfPatternsClassifier):
             print("Running simulation on input pattern: ", i)
             self.computeStateMatrix()
             # self.resetInput()
         self.classifier.computeConceptors()
         print("Classifier Initialized")
+
+    def testClassifier(self):
+        pass
 
     def computeStateMatrix(self):
         stateVectors = []

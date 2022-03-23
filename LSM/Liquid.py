@@ -16,7 +16,7 @@ class Liquid():
         self.count = 0
         print("starting LSM synapses")
         self.synapses.connect(p=nd.connecProb)
-        self.synapses.w[:, :] = '3*rand()*nvolt'
+        self.synapses.w[:, :] = '0*rand()*nvolt'
 
         amount = int(nd.proportionInhib*nd.N_liquid)
         indeces = []
