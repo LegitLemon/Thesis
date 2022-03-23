@@ -73,21 +73,20 @@ class Simulation():
 
     def initClassifier(self):
         print("Starting Classification Procedure, initialising conceptors")
-        amountOfPatterns = 3
+        amountOfPatterns = 1
         for i in range(amountOfPatterns):
             print("Running simulation on input pattern: ", i)
             self.network.run(nd.simLength)
             stateMatrix = self.liquid.computeBinnedActivity()
+            print(stateMatrix)
             self.classifier.stateMatrices.append(stateMatrix)
-            self.resetInput()
-            self.network.restore()
+            # self.resetInput()
+            # self.network.restore()
+            self.plotRun()
         self.classifier.computeConceptors()
         print("Classifier Initialized")
 
-    def run(self):
-        print("starting simulation")
-        self.liquid.reset()
-        self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
+    def plotRun(self):
         fig1 = plt.figure(1)
         plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
         plt.title(label="Input spike train")
@@ -102,5 +101,25 @@ class Simulation():
 
         plot3 = brian_plot(self.liquid.stateMonitor)
         plt.show()
+
+    def run(self):
+        print("starting simulation")
+        self.liquid.reset()
+        self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
+        self.plotRun()
+        # fig1 = plt.figure(1)
+        # plt.plot(self.inputMonitor.t / ms, self.inputMonitor.i, '.k')
+        # plt.title(label="Input spike train")
+        # plt.xlabel(xlabel="time in s")
+        # plt.ylabel(ylabel="injected voltage")
+        # plt.show()
+        #
+        # plot1 = brian_plot(self.outputPop.spikeMonitor)
+        # plt.show()
+        # plot2 = brian_plot(self.liquid.spikemonitor)
+        # plt.show()
+        #
+        # plot3 = brian_plot(self.liquid.stateMonitor)
+        # plt.show()
 
 

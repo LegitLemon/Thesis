@@ -110,25 +110,27 @@ class Liquid():
             self.liquid.v[i] = random.uniform(13.5, 15) * mV
 
     def computeBinnedActivity(self):
-        trains = self.spikeMonitor.spike_trains()
+        trains = self.spikemonitor.spike_trains()
         binnedActivity = []
         for neuron in trains.keys():
-            print(neuron)
             currentSpiketrain = trains[neuron]
             binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
         print(trains)
 
     def computeBinnedSpiketrain(self, spiketrain):
         binnedActivity = []
-        upperbound = 0 * ms
-        lowerbound = nd.binSize
+        upperbound = nd.binSize
+        lowerbound = 0*ms
         while(upperbound < nd.simLength):
             spikeCount = 0
             for spike in spiketrain:
+                # print("spikeTime:", spike)
+                # print("lwb:", lowerbound)
+                # print("upb:", upperbound)
                 if spike >= lowerbound and spike <= upperbound:
                     spikeCount += 1
-
-            spikerate = spikeCount / (nd.binSize/ms)
+            spikerate = spikeCount / (nd.binSize)
+            print(spikerate)
             binnedActivity.append(spikerate)
             upperbound += nd.binSize
             lowerbound += nd.binSize

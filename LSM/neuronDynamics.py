@@ -19,7 +19,7 @@ connecProb = 0.7
 simLength = 5*second
 
 # binsize in ms
-binSize = 20*ms
+binSize = 500*ms
 
 # Neuron Parameters in liquid
 refrac = 3 * ms
