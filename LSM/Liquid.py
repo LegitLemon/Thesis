@@ -11,12 +11,12 @@ class Liquid():
         self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
-        self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, 134, 5))
+        self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, nd.N_liquid, 5))
         self.connectionCount = 0
         self.count = 0
         print("starting LSM synapses")
         self.synapses.connect(p=nd.connecProb)
-        self.synapses.w[:, :] = '0*rand()*nvolt'
+        self.synapses.w[:, :] = '3*rand()*nvolt'
 
         amount = int(nd.proportionInhib*nd.N_liquid)
         indeces = []
@@ -126,7 +126,6 @@ class Liquid():
             currentSpiketrain = trains[neuron]
             binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
         return binnedActivity
-        # print(trains)
 
     def computeBinnedSpiketrain(self, spiketrain):
         binnedActivity = []
@@ -135,13 +134,9 @@ class Liquid():
         while(upperbound < nd.simLength):
             spikeCount = 0
             for spike in spiketrain:
-                # print("spikeTime:", spike)
-                # print("lwb:", lowerbound)
-                # print("upb:", upperbound)
                 if spike >= lowerbound and spike <= upperbound:
                     spikeCount += 1
             spikerate = spikeCount / (nd.binSize)
-            # print(spikerate)
             binnedActivity.append(spikerate)
             upperbound += nd.binSize
             lowerbound += nd.binSize

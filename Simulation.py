@@ -22,7 +22,6 @@ class Simulation():
         self.initOutputSynapses()
         self.network = Network()
         self.initNetwork()
-
         self.classifier = Classifier()
 
     def initNetwork(self):
@@ -107,6 +106,9 @@ class Simulation():
         plt.show()
 
         plot1 = brian_plot(self.outputPop.spikeMonitor)
+        fig = plot1.get_figure()
+        fig.show()
+        print(fig)
         plt.show()
         plot2 = brian_plot(self.liquid.spikemonitor)
         plt.show()
