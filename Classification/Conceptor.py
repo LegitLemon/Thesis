@@ -12,5 +12,6 @@ class Conceptor:
     def init_Conceptor_analytic(self):
         print("Initialisaing Conceptor")
         C_0 = self.alpha**-2 * np.identity(self.N)
+        print(self.R)
         self.C = np.dot(self.R, np.linalg.inv(np.add(self.R, C_0)))
 

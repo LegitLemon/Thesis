@@ -92,7 +92,9 @@ class Simulation():
             stateVectors.append(stateVector)
             self.plotRun()
             # self.network.restore()
-        stateMatrix = np.array(stateVectors)
+        stateMatrix = np.asarray(stateVectors[0])
+        print(stateMatrix.shape)
+
         self.classifier.stateMatrices.append(stateMatrix)
 
 

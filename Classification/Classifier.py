@@ -1,6 +1,6 @@
 import numpy as np
 import LSM.neuronDynamics as nd
-from Conceptor import Conceptor
+from Classification.Conceptor import Conceptor
 class Classifier:
     def __init__(self):
         self.alpha = 0.5
@@ -13,6 +13,7 @@ class Classifier:
         print("Computing Conceptors")
         for stateMatrix in self.stateMatrices:
             R = np.dot(stateMatrix, stateMatrix.transpose()) / nd.amountOfRunsPerPattern
+            print(R.shape)
             self.conceptors.append(Conceptor(R, self.alpha, nd.N_liquid))
 
     def computePositiveEvidence(self, z):

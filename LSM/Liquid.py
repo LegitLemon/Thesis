@@ -117,6 +117,7 @@ class Liquid():
             for i in range(len(liquidTrain)):
                 stateVector.append(liquidTrain[i][binIndex])
             stateVector.append(inputTrain[binIndex])
+        return stateVector
 
 
     def computeBinnedActivity(self, trains):
