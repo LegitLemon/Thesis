@@ -2,16 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from spikes import encoder
 from scipy import signal
-
+from brian2 import *
+import LSM.neuronDynamics as nd
 class SignalEncoder:
     def __init__(self):
-        # number of samples to be taken from the signal.
-        self.T = 300
+        self.T = nd.amountOfSamples
         self.unspikedPatterns = []
         self.spikedPatterns = []
         self.initSpikedPatterns()
         self.offset = 100
-        self.plotEncodedSpikesSignals()
+        indeces = len(self.spikedPatterns[0])*[0]
+        print(self.spikedPatterns[0]*ms)
+        self.spikeGenerator = SpikeGeneratorGroup(1, indeces, self.spikedPatterns[0]*(ms/10))
 
     def initUnspikedPatterns(self):
         # sine wave
@@ -30,6 +32,13 @@ class SignalEncoder:
             expandedPatternSpikes = encoder.BSA(expandedPattern)
             spikeTimes = expandedPatternSpikes.get_spike_time()[0]
             self.spikedPatterns.append(spikeTimes)
+
+    def plotEncodedSpikeSignal(self, index):
+        y = [0 for i in range(len(self.spikedPatterns[index]))]
+        normalizedSpikeTrain = [x/self.offset for x in self.spikedPatterns[index]]
+        plt.plot(normalizedSpikeTrain, y, marker='o')
+        plt.plot(self.unspikedPatterns[index])
+        plt.show()
 
     def plotEncodedSpikesSignals(self):
         for num, (spikeTrain, analogSignal) in enumerate(zip(self.spikedPatterns, self.unspikedPatterns)):

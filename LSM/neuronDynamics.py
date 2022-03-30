@@ -4,9 +4,16 @@ from brian2 import *
 
 ## Dimensionality of neurongroups
 poissonNum = 1
-N_liquid = 75
-N_output = 25
+N_liquid = 20
+N_output = 1
 
+
+# binsize in ms
+binSize = 500*ms
+# simulation length in seconds
+simLength = 5*second
+offsetSignalEncoder = 100
+amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 
 amountOfPatternsClassifier = 1
 amountOfRunsPerPattern = 1
@@ -15,12 +22,6 @@ amountOfRunsPerPattern = 1
 connecProb = 0.7
 proportionInhib = 0.4
 proportionInputInjectionLiquid = 0.7
-
-# simulation length in seconds
-simLength = 5*second
-
-# binsize in ms
-binSize = 500*ms
 
 # Neuron Parameters in liquid
 refrac = 3 * ms
