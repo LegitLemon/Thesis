@@ -15,8 +15,8 @@ simLength = 5*second
 offsetSignalEncoder = 100
 amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 
-amountOfPatternsClassifier = 1
-amountOfRunsPerPattern = 1
+amountOfPatternsClassifier = 3
+amountOfRunsPerPattern = 2
 
 ###
 connecProb = 0.7

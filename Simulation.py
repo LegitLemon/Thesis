@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from brian2tools import *
 from Classification.Classifier import Classifier
 from SignalEncoder import SignalEncoder
+from Classification.Conceptor import  Conceptor
 class Simulation:
     def __init__(self):
         self.signalEncoder = SignalEncoder()
@@ -60,32 +61,40 @@ class Simulation:
             self.outputSynapses.connect(i=i, j=np.arange(nd.N_output))
             self.outputSynapses.w[i, :] = '1.5*rand()*mV'
 
-    def resetInput(self):
-        pass
+    def resetInput(self, index):
+        self.signalEncoder.updateInput(index)
 
     def initClassifier(self):
         print("Starting Classification Procedure, initialising conceptors")
         for i in range(nd.amountOfPatternsClassifier):
             print("Running simulation on input pattern: ", i)
             self.computeStateMatrix(i)
-            # self.resetInput()
+            self.resetInput(i)
         self.classifier.computeConceptors()
         print("Classifier Initialized")
 
     def testClassifier(self):
-        pass
+        for i in range(len(self.classifier.conceptors)):
+            self.liquid.reset()
+            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
+            stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[i]*ms)
+            self.network.restore()
+            print(self.classifier.classify(np.array(stateVector)))
+            self.resetInput(i)
 
     def computeStateMatrix(self, index):
         stateVectors = []
+        self.network.store()
         for i in range(nd.amountOfRunsPerPattern):
             self.liquid.reset()
             self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
             stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[index]*ms)
             stateVectors.append(stateVector)
-            self.plotRun(index)
-            # self.network.restore()
-        stateMatrix = np.asarray(stateVectors[0])
-        print(stateMatrix.shape)
+            # self.plotRun(index)
+            self.network.restore()
+
+        stateMatrix = np.asarray(stateVectors).transpose()
+        print("shape state matrix: ", stateMatrix.shape)
 
         self.classifier.stateMatrices.append(stateMatrix)
 

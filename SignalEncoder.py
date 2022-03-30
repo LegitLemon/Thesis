@@ -10,9 +10,8 @@ class SignalEncoder:
         self.unspikedPatterns = []
         self.spikedPatterns = []
         self.initSpikedPatterns()
-        self.offset = 100
+        self.offset = nd.offsetSignalEncoder
         indeces = len(self.spikedPatterns[0])*[0]
-        print(self.spikedPatterns[0]*ms)
         self.spikeGenerator = SpikeGeneratorGroup(1, indeces, self.spikedPatterns[0]*(ms/10))
 
     def initUnspikedPatterns(self):
@@ -50,4 +49,8 @@ class SignalEncoder:
             plt.plot(analogSignal)
         plt.show()
 
+    def updateInput(self, index):
+        indeces = len(self.spikedPatterns[index])*[0]
+        spikeTimes = self.spikedPatterns[index]*(ms/10)
+        self.spikeGenerator.set_spikes(indeces, spikeTimes)
 
