@@ -8,9 +8,10 @@ from ProgressBar import ProgressBar
 import matplotlib.pyplot as plt
 from brian2tools import *
 from Classification.Classifier import Classifier
-
+from SignalEncoder import SignalEncoder
 class Simulation():
     def __init__(self):
+        self.signalEncoder = SignalEncoder()
         self.poissonInput = PoissonGroup(nd.poissonNum, np.arange(nd.poissonNum)*Hz + 10*Hz)
         self.inputMonitor = SpikeMonitor(self.poissonInput)
         self.liquid = Liquid()
@@ -86,7 +87,7 @@ class Simulation():
         stateVectors = []
         for i in range(nd.amountOfRunsPerPattern):
             self.liquid.reset()
-            self.network.run(nd.simLength)
+            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
             stateVector = self.liquid.computeStateMatrix(self.inputMonitor.t)
             stateVectors.append(stateVector)
             self.plotRun()
@@ -104,15 +105,10 @@ class Simulation():
         plt.xlabel(xlabel="time in s")
         plt.ylabel(ylabel="injected voltage")
         plt.show()
-
         plot1 = brian_plot(self.outputPop.spikeMonitor)
-        fig = plot1.get_figure()
-        fig.show()
-        print(fig)
         plt.show()
         plot2 = brian_plot(self.liquid.spikemonitor)
         plt.show()
-
         plot3 = brian_plot(self.liquid.stateMonitor)
         plt.show()
 
