@@ -1,8 +1,8 @@
 from Simulation import Simulation
 def main():
     simulation = Simulation()
-    simulation.initClassifier()
-    simulation.testClassifier()
-
+    # simulation.initClassifier()
+    # simulation.testClassifier()
+    simulation.run()
 if __name__ == "__main__":
     main()

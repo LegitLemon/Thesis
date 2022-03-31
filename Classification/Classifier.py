@@ -23,5 +23,7 @@ class Classifier:
 
     def classify(self, z):
         evidences = self.computePositiveEvidence(z)
+        print("Prediction evidences: ", evidences)
         judgement = np.argmax(np.array(evidences))
+        print("Judgement: ", judgement)
         return judgement

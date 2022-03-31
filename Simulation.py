@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from brian2tools import *
 from Classification.Classifier import Classifier
 from SignalEncoder import SignalEncoder
-from Classification.Conceptor import  Conceptor
+
 class Simulation:
     def __init__(self):
         self.signalEncoder = SignalEncoder()
@@ -79,7 +79,7 @@ class Simulation:
             self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
             stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[i]*ms)
             self.network.restore()
-            print(self.classifier.classify(np.array(stateVector)))
+            self.classifier.classify(np.array(stateVector))
             self.resetInput(i)
 
     def computeStateMatrix(self, index):
@@ -101,22 +101,28 @@ class Simulation:
 
     def plotRun(self, index):
         # plot0 = brian_plot(self.signalEncoder.spikeGenerator)
-        brian_plot(self.inputMonitor)
+        plot0 = brian_plot(self.inputMonitor)
+        self.savePlot(plot0, "Input")
         plt.show()
         self.signalEncoder.plotEncodedSpikeSignal(index)
         plot1 = brian_plot(self.outputPop.spikeMonitor)
+        self.savePlot(plot1, "OutputResponse")
         plt.show()
-
         plot2 = brian_plot(self.liquid.spikemonitor)
+        self.savePlot(plot2, "LiquidResponse")
+        plt.show()
+        plot3 = brian_plot(self.liquid.stateMonitor)
+        self.savePlot(plot3, "LiquidState")
         plt.show()
 
-        plot3 = brian_plot(self.liquid.stateMonitor)
-        plt.show()
+    def savePlot(self, axisObject, name):
+        plot = axisObject.get_figure()
+        plot.savefig("Plots/"+name+".png")
 
     def run(self):
         print("starting simulation")
         self.liquid.reset()
         self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
-        self.plotRun()
+        self.plotRun(0)
 
 
