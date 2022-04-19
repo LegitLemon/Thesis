@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from brian2tools import *
 from Classification.Classifier import Classifier
 from SignalEncoder import SignalEncoder
+import builtins as builtins
 
 class Simulation:
     def __init__(self):
@@ -82,6 +83,38 @@ class Simulation:
             self.classifier.classify(np.array(stateVector))
             self.resetInput(i)
 
+        correct = 0
+        false = 0
+
+        howManyTests = builtins.input()
+        print("How many tests would you like to do?")
+        for i in range(int(howManyTests)):
+            scaling, leftOrRight, testSignal, answer = self.signalEncoder.permutateSignal()
+            spikePermutatedSignal = self.signalEncoder.initSpikePattern(testSignal)
+            indeces = [0]*len(spikePermutatedSignal)
+            spikeTimes = spikePermutatedSignal*ms
+            self.signalEncoder.spikeGenerator.set_spikes(indeces, spikeTimes)
+            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
+            stateVector = self.liquid.computeStateMatrix(spikeTimes)
+            judgement = self.classifier.classify(np.array(stateVector))
+
+            if (judgement != answer):
+                false += 1
+                print("Incorrect classification")
+            else:
+                correct += 1
+                print("Correct classification")
+            self.network.restore()
+        self.printClassifierStatistics(correct, false)
+
+
+    def printClassifierStatistics(self, correct, false):
+        total = correct + false
+        print("percentage of jedgements correct: ", correct/total*100, "%")
+        print("total: ", total)
+        print("correct: ", correct, "/", total)
+        print("incorrect: ", false, "/", total)
+
     def computeStateMatrix(self, index):
         stateVectors = []
         self.network.store()
@@ -90,7 +123,7 @@ class Simulation:
             self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
             stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[index]*ms)
             stateVectors.append(stateVector)
-            self.plotRun(index)
+            # self.plotRun(index)
             self.network.restore()
 
         stateMatrix = np.asarray(stateVectors).transpose()

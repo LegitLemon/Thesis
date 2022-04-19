@@ -48,11 +48,14 @@ class SignalEncoder:
     def initSpikedPatterns(self):
         self.initUnspikedPatterns()
         for unspikedPattern in self.unspikedPatterns:
-            expandedPattern = np.expand_dims(np.asarray([unspikedPattern]), axis=2)
-            expandedPatternSpikes = encoder.BSA(expandedPattern, filter_length=6, cutoff=0.1, threshold=.6)
-            spikeTimes = expandedPatternSpikes.get_spike_time(offset=1)[0]
-            spikeTimes = self.filterSpikeTrainWithRefractory(spikeTimes)
-            self.spikedPatterns.append(spikeTimes)
+            self.spikedPatterns.append(self.initSpikePattern(unspikedPattern))
+
+    def initSpikePattern(self, unspikedPattern):
+        expandedPattern = np.expand_dims(np.asarray([unspikedPattern]), axis=2)
+        expandedPatternSpikes = encoder.BSA(expandedPattern, filter_length=6, cutoff=0.1, threshold=.6)
+        spikeTimes = expandedPatternSpikes.get_spike_time(offset=1)[0]
+        spikeTimes = self.filterSpikeTrainWithRefractory(spikeTimes)
+        return spikeTimes
 
     def plotEncodedSpikeSignal(self, index):
         y = [0 for i in range(len(self.spikedPatterns[index]))]
@@ -78,3 +81,21 @@ class SignalEncoder:
         spikeTimes = self.spikedPatterns[index]*(ms)
         self.spikeGenerator.set_spikes(indeces, spikeTimes)
 
+    def permutateSignal(self):
+        stop = int(nd.simLength/ms)
+        n = np.linspace(start=0, stop=5, num=stop)
+
+        scaling = np.random.uniform(0.8, 1.2)
+        leftorright = np.random.uniform(0, 0.5*pi)
+        print("scaling: ", scaling)
+        print("transform ", leftorright)
+        index = np.random.randint(0, len(self.unspikedPatterns)-1)
+
+        if (index == 0):
+            return scaling, leftorright, scaling*np.sin(2*np.pi*n+leftorright)+1, index
+        elif (index == 1):
+            return scaling, leftorright, scaling*signal.sawtooth(8 * n+leftorright) + 1, index
+        elif (index == 2):
+            return scaling, leftorright, scaling*np.cos(2*np.pi*n+leftorright)+1, index
+        elif (index == 3):
+            return scaling, leftorright, scaling*signal.square(4 * n+leftorright) + 1, index

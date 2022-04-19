@@ -15,7 +15,7 @@ simLength = 5*second
 offsetSignalEncoder = 100
 amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 
-amountOfPatternsClassifier = 3
+amountOfPatternsClassifier = 4
 amountOfRunsPerPattern = 2
 
 ###
