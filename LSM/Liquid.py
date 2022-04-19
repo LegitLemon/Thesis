@@ -16,7 +16,7 @@ class Liquid():
         self.count = 0
         print("starting LSM synapses")
         self.synapses.connect(p=nd.connecProb)
-        self.synapses.w[:, :] = '3*rand()*nvolt'
+        self.synapses.w[:, :] = '1*rand()*mvolt'
 
         amount = int(nd.proportionInhib*nd.N_liquid)
         indeces = []
@@ -26,7 +26,7 @@ class Liquid():
             while ind in indeces:
                 ind = random.randint(0, nd.N_liquid-1)
             indeces.append(ind)
-            self.synapses.w[ind, :] = '-3*rand()*nvolt'
+            self.synapses.w[ind, :] = '-0.2*rand()*mvolt'
 
 
     def initNeuronTypes(self):

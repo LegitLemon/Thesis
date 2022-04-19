@@ -20,8 +20,8 @@ amountOfRunsPerPattern = 2
 
 ###
 connecProb = 0.7
-proportionInhib = 0.4
-proportionInputInjectionLiquid = 0.7
+proportionInhib = 0.5
+proportionInputInjectionLiquid = 1
 
 # Neuron Parameters in liquid
 refrac = 3 * ms

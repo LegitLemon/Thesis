@@ -53,7 +53,7 @@ class Simulation:
                 index = random.randint(0, nd.N_liquid-1)
             indeces.append(index)
             self.inputSynapses.connect(i=np.arange(nd.poissonNum), j=index)
-            self.inputSynapses.w[:, index] = '1.5*rand()*mV'
+            self.inputSynapses.w[:, index] = '0.7*rand()*mV'
 
     def initOutputSynapses(self):
         print("Making output connections to outputPopulation")
@@ -90,7 +90,7 @@ class Simulation:
             self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
             stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[index]*ms)
             stateVectors.append(stateVector)
-            # self.plotRun(index)
+            self.plotRun(index)
             self.network.restore()
 
         stateMatrix = np.asarray(stateVectors).transpose()

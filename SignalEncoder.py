@@ -13,7 +13,7 @@ class SignalEncoder:
         self.offset = nd.offsetSignalEncoder
         indeces = len(self.spikedPatterns[0])*[0]
         print(self.spikedPatterns[0])
-        self.spikeGenerator = SpikeGeneratorGroup(1, indeces, self.spikedPatterns[0]*(ms/10))
+        self.spikeGenerator = SpikeGeneratorGroup(1, indeces, self.spikedPatterns[0]*(ms))
 
     def initUnspikedPatterns(self):
         # # sine wave
@@ -51,13 +51,13 @@ class SignalEncoder:
             expandedPattern = np.expand_dims(np.asarray([unspikedPattern]), axis=2)
             expandedPatternSpikes = encoder.BSA(expandedPattern, filter_length=6, cutoff=0.1, threshold=.6)
             spikeTimes = expandedPatternSpikes.get_spike_time(offset=1)[0]
-            print(spikeTimes)
+            spikeTimes = self.filterSpikeTrainWithRefractory(spikeTimes)
             self.spikedPatterns.append(spikeTimes)
 
     def plotEncodedSpikeSignal(self, index):
         y = [0 for i in range(len(self.spikedPatterns[index]))]
-        normalizedSpikeTrain = [x/self.offset for x in self.spikedPatterns[index]]
-        plt.plot(normalizedSpikeTrain, y, marker='o')
+        normalizedSpikeTrain = [x for x in self.spikedPatterns[index]]
+        plt.plot(normalizedSpikeTrain, y, marker='|')
         plt.plot(self.unspikedPatterns[index])
         plt.show()
 
@@ -75,6 +75,6 @@ class SignalEncoder:
 
     def updateInput(self, index):
         indeces = len(self.spikedPatterns[index])*[0]
-        spikeTimes = self.spikedPatterns[index]*(ms/10)
+        spikeTimes = self.spikedPatterns[index]*(ms)
         self.spikeGenerator.set_spikes(indeces, spikeTimes)
 
