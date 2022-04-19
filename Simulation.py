@@ -101,6 +101,7 @@ class Simulation:
             if (judgement != answer):
                 false += 1
                 print("Incorrect classification")
+                print("Correct answer was: ", answer)
             else:
                 correct += 1
                 print("Correct classification")

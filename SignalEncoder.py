@@ -89,7 +89,7 @@ class SignalEncoder:
         leftorright = np.random.uniform(0, 0.5*pi)
         print("scaling: ", scaling)
         print("transform ", leftorright)
-        index = np.random.randint(0, len(self.unspikedPatterns)-1)
+        index = np.random.randint(0, len(self.unspikedPatterns))
 
         if (index == 0):
             return scaling, leftorright, scaling*np.sin(2*np.pi*n+leftorright)+1, index
