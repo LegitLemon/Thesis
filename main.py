@@ -1,8 +1,12 @@
 from Simulation import Simulation
+
 def main():
     simulation = Simulation()
+    #
     # simulation.initClassifier()
     # simulation.testClassifier()
-    simulation.run()
+
+    simulation.signalEncoder.plotEncodedSpikesSignals()
+    # simulation.run()
 if __name__ == "__main__":
     main()
