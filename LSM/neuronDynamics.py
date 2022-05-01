@@ -12,6 +12,7 @@ N_output = 1
 binSize = 500*ms
 # simulation length in seconds
 simLength = 5*second
+amountOfBins = int(simLength/binSize)
 offsetSignalEncoder = 100
 amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 

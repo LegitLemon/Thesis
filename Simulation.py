@@ -7,9 +7,7 @@ import numpy as np
 from Utils.ProgressBar import ProgressBar
 import matplotlib.pyplot as plt
 from brian2tools import *
-from Classification.Classifier import Classifier
 from SignalEncoder import SignalEncoder
-import builtins as builtins
 
 class Simulation:
     def __init__(self):
@@ -24,7 +22,6 @@ class Simulation:
         self.initOutputSynapses()
         self.network = Network()
         self.initNetwork()
-        self.classifier = Classifier()
 
     def initNetwork(self):
         print("Compiling network")
@@ -42,7 +39,6 @@ class Simulation:
         self.network.add(self.outputPop.outputPopulation)
         self.network.add(self.outputPop.spikeMonitor)
         self.network.add(self.outputSynapses)
-
 
     def initInputSynapses(self):
         print("making Connection to input LSM")
@@ -69,69 +65,10 @@ class Simulation:
         print("Starting Classification Procedure, initialising conceptors")
         for i in range(nd.amountOfPatternsClassifier):
             print("Running simulation on input pattern: ", i)
-            self.computeStateMatrix(i)
+            self.computeStateMatrixClassification(i)
             self.resetInput(i)
         self.classifier.computeConceptors()
         print("Classifier Initialized")
-
-    def testClassifier(self):
-        for i in range(len(self.classifier.conceptors)):
-            self.liquid.reset()
-            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
-            stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[i]*ms)
-            self.network.restore()
-            self.classifier.classify(np.array(stateVector))
-            self.resetInput(i)
-
-        correct = 0
-        false = 0
-
-        howManyTests = builtins.input()
-        print("How many tests would you like to do?")
-        for i in range(int(howManyTests)):
-            scaling, leftOrRight, testSignal, answer = self.signalEncoder.permutateSignal()
-            spikePermutatedSignal = self.signalEncoder.initSpikePattern(testSignal)
-            indeces = [0]*len(spikePermutatedSignal)
-            spikeTimes = spikePermutatedSignal*ms
-            self.signalEncoder.spikeGenerator.set_spikes(indeces, spikeTimes)
-            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
-            stateVector = self.liquid.computeStateMatrix(spikeTimes)
-            judgement = self.classifier.classify(np.array(stateVector))
-
-            if (judgement != answer):
-                false += 1
-                print("Incorrect classification")
-                print("Correct answer was: ", answer)
-            else:
-                correct += 1
-                print("Correct classification")
-            self.network.restore()
-        self.printClassifierStatistics(correct, false)
-
-
-    def printClassifierStatistics(self, correct, false):
-        total = correct + false
-        print("percentage of jedgements correct: ", correct/total*100, "%")
-        print("total: ", total)
-        print("correct: ", correct, "/", total)
-        print("incorrect: ", false, "/", total)
-
-    def computeStateMatrix(self, index):
-        stateVectors = []
-        self.network.store()
-        for i in range(nd.amountOfRunsPerPattern):
-            self.liquid.reset()
-            self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
-            stateVector = self.liquid.computeStateMatrix(self.signalEncoder.spikedPatterns[index]*ms)
-            stateVectors.append(stateVector)
-            # self.plotRun(index)
-            self.network.restore()
-
-        stateMatrix = np.asarray(stateVectors).transpose()
-        print("shape state matrix: ", stateMatrix.shape)
-
-        self.classifier.stateMatrices.append(stateMatrix)
-
 
     def plotRun(self, index):
         # plot0 = brian_plot(self.signalEncoder.spikeGenerator)

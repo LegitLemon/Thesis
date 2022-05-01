@@ -1,12 +1,12 @@
-from Simulation import Simulation
-
-
+from Classification.Classifier import Classifier
+from Control.Controller import Controller
 def main():
-    simulation = Simulation()
-    simulation.initClassifier()
-    simulation.testClassifier()
-    # simulation.signalEncoder.plotEncodedSpikesSignals()
-    # simulation.run()
+    controller = Controller()
+    controller.initController()
+    # classifier = Classifier()
+    # classifier.initClassifier()
+    # classifier.testClassifier()
+
 
 
 if __name__ == "__main__":
