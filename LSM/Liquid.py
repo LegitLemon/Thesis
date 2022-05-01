@@ -71,25 +71,6 @@ class Liquid():
                     self.setConncetion(dist, neuronFrom, neuronTo)
 
     def setConncetion(self, dist, neuronFrom, neuronTo):
-        # # Probabillity of a connection between a and b C*e^-(D(a,b)/lambda)^(2)
-        # exponent = -1*(dist/nd.lam)
-        # exponent = exponent ** 2
-        #
-        # if self.neurontypes[neuronFrom] is True:
-        #     if self.neurontypes[neuronTo] is True:
-        #     # EE
-        #         C = 0.3
-        #     else:
-        #     # EI
-        #         C = 0.2
-        # else:
-        #     if self.neurontypes[neuronTo] is True:
-        #     #IE
-        #         C = 0.4
-        #     else:
-        #     #II
-        #         C = 0.1
-        # prob = C * exp(exponent)
         prob = 0.5
         val = random.random()
         self.count += 1
@@ -105,13 +86,13 @@ class Liquid():
         for i in range(nd.N_liquid):
             self.liquid.v[i] = random.uniform(13.5, 15) * mV
 
-    def computeStateMatrix(self, inputSpikeTrain):
+    def computeStateMatrixClassification(self, inputSpikeTrain):
         liquidSpiketrains = self.spikemonitor.spike_trains()
         binnedLiquidStates = self.computeBinnedActivity(liquidSpiketrains)
         binnedInputStates = self.computeBinnedActivity({"1": inputSpikeTrain})[0]
-        return self.compileStateMatrix(binnedInputStates, binnedLiquidStates)
+        return self.compileStateMatrixClassification(binnedInputStates, binnedLiquidStates)
 
-    def compileStateMatrix(self, inputTrain, liquidTrain):
+    def compileStateMatrixClassification(self, inputTrain, liquidTrain):
         stateVector = []
         for binIndex in range(len(inputTrain)):
             for i in range(len(liquidTrain)):
@@ -119,6 +100,9 @@ class Liquid():
             stateVector.append(inputTrain[binIndex])
         return stateVector
 
+    def computeStateMatrixControl(self):
+        liquidSpiketrains = self.spikemonitor.spike_trains()
+        return self.computeBinnedActivity(liquidSpiketrains)
 
     def computeBinnedActivity(self, trains):
         binnedActivity = []
