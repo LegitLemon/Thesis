@@ -45,7 +45,6 @@ class Liquid():
             neuronTypes[ind] = True
         return neuronTypes
 
-    # Euclidian norm on R^{3}
     def getDistance(self, a, b):
         diff = 0
         for i in range(len(a)):

@@ -93,6 +93,7 @@ class Simulation:
     def run(self):
         print("starting simulation")
         self.liquid.reset()
+
         self.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
         self.plotRun(0)
 

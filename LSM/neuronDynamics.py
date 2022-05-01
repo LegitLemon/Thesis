@@ -9,7 +9,9 @@ N_output = 1
 
 
 # binsize in ms
-binSize = 500*ms
+binSize = 200*ms
+# The amount of binned windows to be discarded when constructing
+washoutTime = 2
 # simulation length in seconds
 simLength = 5*second
 amountOfBins = int(simLength/binSize)
@@ -18,6 +20,9 @@ amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 
 amountOfPatternsClassifier = 4
 amountOfRunsPerPattern = 2
+
+
+
 
 ###
 connecProb = 0.7

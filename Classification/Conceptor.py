@@ -11,6 +11,6 @@ class Conceptor:
     #C(R, α) = R (R + α−2 I)−1 = (R + α−2 I)−1 R
     def init_Conceptor_analytic(self):
         print("Initialisaing Conceptor")
-        C_0 = self.alpha**-2 * np.identity(189)
+        C_0 = self.alpha**-2 * np.identity(self.N)
         self.C = np.dot(self.R, np.linalg.inv(np.add(self.R, C_0)))
 

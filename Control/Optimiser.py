@@ -7,7 +7,7 @@ class Optimiser:
         self.state_collection_matrices = []
         self.delayed_state_matrices = []
         self.patterns = patterns
-        self.washout_time = 0
+        self.washout_time = nd.washoutTime
         self.N = nd.N_liquid
         self.T = nd.amountOfBins
 
@@ -33,11 +33,11 @@ class Optimiser:
         self.X = X
 
         # append all pattern matrices
-        P = np.array(self.patterns[0][-(self.T-self.washout_time):])
+        P = np.array(self.patterns[0][-(self.T-self.washout_time-1):])
+        print(P.shape)
         for i, P_j in enumerate(self.patterns):
             if i != 0:
                 P = np.hstack((P, np.array(P_j[-(self.T-self.washout_time):])))
-
         self.P = P
         return self.ridge_regression(X, P, self.rho_Wout)
 
@@ -47,10 +47,11 @@ class Optimiser:
         for i, X_j in enumerate(self.delayed_state_matrices):
             if i != 0:
                 X_tilde = np.hstack((X_tilde, X_j))
-        B = self.get_bias_matrix()
-        val2 = np.arctanh(self.X)-B
-        print("X: ",self.X.shape)
-        print("B: ", B.shape)
+        # B = self.get_bias_matrix()
+        val2 = self.X
+        # val2 = np.arctanh(self.X)-B
+        # print("X: ",self.X.shape)
+        # print("B: ", B.shape)
         print("X,tilde: ", X_tilde.shape)
         W_opt = self.ridge_regression(X_tilde, val2, self.rho_W)
         print("Opt: ", W_opt.shape)
