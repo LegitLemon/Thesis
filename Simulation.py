@@ -10,10 +10,10 @@ from brian2tools import *
 from SignalEncoder import SignalEncoder
 
 class Simulation:
-    def __init__(self):
+    def __init__(self, control):
         self.signalEncoder = SignalEncoder()
         self.inputMonitor = SpikeMonitor(self.signalEncoder.spikeGenerator)
-        self.liquid = Liquid()
+        self.liquid = Liquid(control)
         self.inputSynapses = Synapses(self.signalEncoder.spikeGenerator, self.liquid.liquid, model="w:volt", on_pre="v += w")
         self.initInputSynapses()
 

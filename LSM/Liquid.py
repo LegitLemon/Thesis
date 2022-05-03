@@ -5,10 +5,16 @@ import random
 
 class Liquid():
 
-    def __init__(self):
+    def __init__(self, control):
         print("Making new LSM")
         self.neurontypes = self.initNeuronTypes()
-        self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
+
+        if control is True:
+            self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thresOutDynamicThreshold,
+                                      model=nd.eqsDynamicThreshold, refractory=nd.refrac, reset=nd.reset)
+        else:
+            self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
+
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
         self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, nd.N_liquid, 5))

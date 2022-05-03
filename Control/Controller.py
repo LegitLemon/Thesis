@@ -7,7 +7,7 @@ from Classification.Conceptor import Conceptor
 
 class Controller:
     def __init__(self):
-        self.simulation = Simulation()
+        self.simulation = Simulation(True)
         patterns = self.simulation.signalEncoder.spikedPatterns[0]
         binnedPattern = self.simulation.liquid.computeBinnedSpiketrain(patterns * ms)
         print(binnedPattern)
@@ -22,6 +22,7 @@ class Controller:
 
     def initController(self):
         print("Starting Controller Procedure, initialising conceptor")
+        self.simulation.liquid.liquid.v_th[:] = 15*mV
         self.simulation.network.store()
         self.simulation.network.run(nd.simLength, report=ProgressBar(), report_period=0.2*second)
         self.systemStates = self.simulation.liquid.computeStateMatrixControl()
@@ -62,6 +63,10 @@ class Controller:
 
     def testTrainingOutputWeights(self):
         self.simulation.run()
+
+    def initNeuronThresholdNormal(self):
+        self.simulation.liquid.liquid.v_th[:] = 15*mV
+
 
     def conceptorControl(self):
         pass

@@ -12,7 +12,7 @@ class Classifier:
         self.inputSpikeTrains = []
         self.conceptors = []
         self.correlations = []
-        self.simulation = Simulation()
+        self.simulation = Simulation(False)
 
     def computeConceptors(self):
         print("Computing Conceptors")

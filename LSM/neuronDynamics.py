@@ -41,6 +41,14 @@ dv/dt = -(v)/(30*ms) + ((1*Mohm)*I)/(30*ms): volt (unless refractory)
 I = 13.5 * nampere: ampere
 '''
 
+eqsDynamicThreshold = '''
+dv/dt = -(v)/(30*ms) + ((1*Mohm)*I)/(30*ms): volt (unless refractory)
+I = 13.5 * nampere: ampere
+v_th : volt  # neuron-specific threshold
+'''
+thresOutDynamicThreshold = "v > v_th"
+
+
 # Neuron parameters in output
 refracOut = 0 * ms
 thresOut = "v>= 15 * mV"
