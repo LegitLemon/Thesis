@@ -39,6 +39,7 @@ class Controller:
         self.adjustOutputWeights()
         self.adjustInternalWeights()
         self.testTrainingOutputWeights()
+        self.conceptorControl()
 
 
     def adjustOutputWeights(self):
@@ -61,3 +62,6 @@ class Controller:
 
     def testTrainingOutputWeights(self):
         self.simulation.run()
+
+    def conceptorControl(self):
+        pass

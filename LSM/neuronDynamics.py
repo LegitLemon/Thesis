@@ -4,7 +4,7 @@ from brian2 import *
 
 ## Dimensionality of neurongroups
 poissonNum = 1
-N_liquid = 20
+N_liquid = 10
 N_output = 1
 
 
