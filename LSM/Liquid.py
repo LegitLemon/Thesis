@@ -105,22 +105,35 @@ class Liquid():
             stateVector.append(inputTrain[binIndex])
         return stateVector
 
+    def resetControl(self):
+        for i in range(nd.N_liquid):
+            self.liquid.v[i] = random.uniform(15.5, 16) * mV
+
+
     def computeStateMatrixControl(self):
         liquidSpiketrains = self.spikemonitor.spike_trains()
         return self.computeBinnedActivity(liquidSpiketrains)
 
-    def computeBinnedActivity(self, trains):
+    def computeBinnedActivity(self, trains, finalTimeStep=None):
         binnedActivity = []
         for neuron in trains.keys():
             currentSpiketrain = trains[neuron]
-            binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain))
+            binnedActivity.append(self.computeBinnedSpiketrain(currentSpiketrain, finalTimeStep))
         return binnedActivity
 
-    def computeBinnedSpiketrain(self, spiketrain):
+    def computeBinnedSpiketrain(self, spiketrain, finalTimeStep=None):
         binnedActivity = []
         upperbound = nd.binSize
         lowerbound = 0*ms
+
+        if finalTimeStep is not None:
+            finalUpperBound = finalTimeStep
+        else:
+            finalUpperBound = nd.simLength
+
         while(upperbound < nd.simLength):
+            # if lowerbound == nd.simLength:
+            #     break
             spikeCount = 0
             for spike in spiketrain:
                 if spike >= lowerbound and spike <= upperbound:

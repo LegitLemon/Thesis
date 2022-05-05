@@ -61,14 +61,6 @@ class Simulation:
     def resetInput(self, index):
         self.signalEncoder.updateInput(index)
 
-    def initClassifier(self):
-        print("Starting Classification Procedure, initialising conceptors")
-        for i in range(nd.amountOfPatternsClassifier):
-            print("Running simulation on input pattern: ", i)
-            self.computeStateMatrixClassification(i)
-            self.resetInput(i)
-        self.classifier.computeConceptors()
-        print("Classifier Initialized")
 
     def plotRun(self, index):
         # plot0 = brian_plot(self.signalEncoder.spikeGenerator)

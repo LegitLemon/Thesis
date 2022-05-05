@@ -30,6 +30,7 @@ class SignalEncoder:
         self.unspikedPatterns.append(signal.sawtooth(8*n)+1)
         self.unspikedPatterns.append(np.cos(2*np.pi*n)+1)
         self.unspikedPatterns.append(signal.square(4*n)+1)
+        # self.unspikedPatterns.append(np.zeros(stop))
 
 
     def filterSpikeTrainWithRefractory(self, spiketrain):
