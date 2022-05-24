@@ -13,11 +13,12 @@ class Controller:
         print(binnedPattern)
         self.optimiser = Optimiser([np.array(binnedPattern)])
 
+
         self.outputWeights = None
         self.loadingWeights = None
         self.systemStates = None
         self.conceptor = None
-
+        self.spikeCountsRetrieval = [0]*nd.N_liquid
 
 
     def initController(self):
@@ -29,22 +30,23 @@ class Controller:
 
         stateMatrix, delayedStateMatrix = self.systemMatrixToStateMatrix(np.array(self.systemStates))
         print("Printing StateMatrix")
-        print(stateMatrix)
+
         self.optimiser.state_collection_matrices.append(np.array(stateMatrix))
         self.optimiser.delayed_state_matrices.append(np.array(delayedStateMatrix))
         self.outputWeights = self.optimiser.compute_output_weights()
         # print(self.outputWeights)
         corMatrix = np.dot(stateMatrix, stateMatrix.transpose()) / nd.N_liquid
-        print(corMatrix)
         self.loadingWeights = self.optimiser.compute_connection_weights()
         self.conceptor = Conceptor(corMatrix, 0.5, nd.N_liquid)
-        print(self.conceptor.C)
+        # print(self.conceptor.C)
         print("computing optimal connection weights, adjusting network parameters")
         self.simulation.network.restore()
         self.adjustOutputWeights()
         self.adjustInternalWeights()
+        self.simulation.network.store()
         self.simulation.run()
         self.conceptorControl()
+        self.simulation.signalEncoder.plotEncodedSpikeSignal(0)
         self.simulation.plotRun(0)
 
     def adjustOutputWeights(self):
@@ -53,9 +55,10 @@ class Controller:
         self.simulation.network.store()
 
     def adjustInternalWeights(self):
-        print(self.loadingWeights)
+        # print(self.loadingWeights)
         for row, rowVector in enumerate(self.loadingWeights):
             for column, value in enumerate(rowVector):
+                # print(value)
                 self.simulation.liquid.synapses.w[row, column] = value * mvolt
 
     def systemMatrixToStateMatrix(self, systemMatrix):
@@ -74,7 +77,8 @@ class Controller:
         self.simulation.network.remove(self.simulation.inputSynapses)
         self.simulation.network.remove(self.simulation.inputMonitor)
         thresholds = []
-        for i in range(nd.amountOfBins-1):
+        for i in range(int((2500/(nd.binSize/ms)-1))):
+            print(i*nd.binSize)
             self.simulation.liquid.resetControl()
             self.simulation.network.run(nd.binSize)
             newThresholds = self.updateNeuronThresholds(i)
@@ -83,6 +87,12 @@ class Controller:
 
     def getCurrentNeuronStates(self, currentIndex):
         liquidSpiketrains = self.simulation.liquid.spikemonitor.spike_trains()
+        cutLiquidSpikeTrains = []
+        for index, (liquidSpikeTrain, currentCorrespondingSpikecount) in enumerate(zip(liquidSpiketrains.keys(), self.spikeCountsRetrieval)):
+            spiketrain = liquidSpiketrains[liquidSpikeTrain]
+            liquidSpiketrains[liquidSpikeTrain] = spiketrain[currentCorrespondingSpikecount:]
+            self.spikeCountsRetrieval[index] = len(liquidSpiketrains[liquidSpikeTrain]) + self.spikeCountsRetrieval[index]
+
         binnedLiquidStates = self.simulation.liquid.computeBinnedActivity(liquidSpiketrains, currentIndex*nd.binSize+nd.binSize)
         states = []
         for binnedSpikeTrain in binnedLiquidStates:
@@ -93,12 +103,24 @@ class Controller:
         neuronStates = self.getCurrentNeuronStates(binIndex)
         thresholds = []
         for index, currentNeuronState in enumerate(neuronStates):
+            row = self.conceptor.C[index, :]
             column = self.conceptor.C[:, index]
             # print(column)
             # print(np.array(neuronStates))
-            threshold = np.dot(column, np.array(neuronStates))
+            computedThreshold = np.dot(row, np.array(neuronStates))*mvolt
+            if computedThreshold > nd.upperboundThreshold:
+                threshold = nd.upperboundThreshold
+            elif computedThreshold < nd.lowerboundThreshold:
+                threshold = nd.lowerboundThreshold
+            else:
+                threshold = computedThreshold
             thresholds.append(threshold)
-            self.simulation.liquid.liquid.v_th[index] = threshold * mvolt
+            self.simulation.liquid.liquid.v_th[index] = threshold
+        print("membrane potential: ", self.simulation.liquid.liquid.v[3])
+        print("firing rate:", neuronStates[3])
+        print("threshold: ", thresholds[3])
+        print("computed threshold: ", computedThreshold)
+        print()
         return thresholds
 
     def plotThresholds(self, threholds):

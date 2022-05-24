@@ -4,12 +4,12 @@ from brian2 import *
 
 ## Dimensionality of neurongroups
 poissonNum = 1
-N_liquid = 10
+N_liquid = 50
 N_output = 1
 
 
 # binsize in ms
-binSize = 200*ms
+binSize = 25*ms
 # The amount of binned windows to be discarded when constructing
 washoutTime = 2
 # simulation length in seconds
@@ -21,12 +21,12 @@ amountOfSamples = int(simLength/(offsetSignalEncoder*(ms/10)))
 amountOfPatternsClassifier = 4
 amountOfRunsPerPattern = 2
 
-
-
+lowerboundThreshold = 14.5 * mV
+upperboundThreshold = 17 * mV
 
 ###
-connecProb = 0.7
-proportionInhib = 0.5
+connecProb = 0.5
+proportionInhib = 0.3
 proportionInputInjectionLiquid = 1
 
 # Neuron Parameters in liquid
@@ -42,12 +42,13 @@ I = 13.5 * nampere: ampere
 '''
 
 eqsDynamicThreshold = '''
-dv/dt = -(v)/(30*ms) + ((1*Mohm)*I)/(30*ms): volt (unless refractory)
+dv/dt = -(v)/(tau) + ((1*Mohm)*I)/(tau): volt (unless refractory)
+tau : second
 I = 13.5 * nampere: ampere
 v_th : volt  # neuron-specific threshold
 '''
-thresOutDynamicThreshold = "v > v_th"
-
+thresOutDynamicThreshold = "v >= v_th"
+resetDynamicThreshold = "v = 0.8*v_th"
 
 # Neuron parameters in output
 refracOut = 0 * ms

@@ -11,6 +11,7 @@ from SignalEncoder import SignalEncoder
 
 class Simulation:
     def __init__(self, control):
+        self.control = control
         self.signalEncoder = SignalEncoder()
         self.inputMonitor = SpikeMonitor(self.signalEncoder.spikeGenerator)
         self.liquid = Liquid(control)
@@ -25,6 +26,8 @@ class Simulation:
 
     def initNetwork(self):
         print("Compiling network")
+        if self.control:
+            self.network.add(self.liquid.thresholdMonitor)
         #input
         self.network.add(self.signalEncoder.spikeGenerator)
         self.network.add(self.inputSynapses)
@@ -78,11 +81,18 @@ class Simulation:
         self.savePlot(plot3, "LiquidState")
         plt.show()
 
+        if(self.control):
+            plot4 = brian_plot(self.liquid.thresholdMonitor)
+            self.savePlot(plot4, "thresholds")
+            plt.show()
+
     def savePlot(self, axisObject, name):
         plot = axisObject.get_figure()
         plot.savefig("Plots/"+name+".png")
 
     def run(self):
+        if self.control:
+            self.liquid.liquid.v_th[:] = 15 * mV
         print("starting simulation")
         self.liquid.reset()
 

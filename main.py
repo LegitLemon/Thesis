@@ -2,6 +2,7 @@ from Classification.Classifier import Classifier
 from Control.Controller import Controller
 def main():
     controller = Controller()
+    # controller.simulation.run()
     controller.initController()
     # classifier = Classifier()
     # classifier.initClassifier()

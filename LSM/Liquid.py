@@ -11,18 +11,22 @@ class Liquid():
 
         if control is True:
             self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thresOutDynamicThreshold,
-                                      model=nd.eqsDynamicThreshold, refractory=nd.refrac, reset=nd.reset)
+                                      model=nd.eqsDynamicThreshold, refractory=nd.refrac, reset=nd.resetDynamicThreshold)
+            self.initTimeConstants()
+            self.thresholdMonitor = StateMonitor(self.liquid, 'v_th', record=np.random.randint(0, nd.N_liquid, 5))
+
         else:
             self.liquid = NeuronGroup(N=nd.N_liquid, threshold=nd.thres, model=nd.eqs, refractory=nd.refrac, reset=nd.reset)
 
         self.synapses = Synapses(self.liquid, self.liquid, model="w:volt", on_pre=nd.weightEQ)
         self.spikemonitor = SpikeMonitor(self.liquid)
         self.stateMonitor = StateMonitor(self.liquid, 'v', record=np.random.randint(0, nd.N_liquid, 5))
+
         self.connectionCount = 0
         self.count = 0
         print("starting LSM synapses")
         self.synapses.connect(p=nd.connecProb)
-        self.synapses.w[:, :] = '1*rand()*mvolt'
+        self.synapses.w[:, :] = '0.5*rand()*mvolt'
 
         amount = int(nd.proportionInhib*nd.N_liquid)
         indeces = []
@@ -32,8 +36,12 @@ class Liquid():
             while ind in indeces:
                 ind = random.randint(0, nd.N_liquid-1)
             indeces.append(ind)
-            self.synapses.w[ind, :] = '-0.2*rand()*mvolt'
+            self.synapses.w[ind, :] = '-0.02*rand()*mvolt'
 
+
+    def initTimeConstants(self):
+        for i in range(nd.N_liquid):
+            self.liquid.tau[i] = random.randint(25, 30) *ms
 
     def initNeuronTypes(self):
         # initialise all neurons to be excitatory
@@ -107,7 +115,7 @@ class Liquid():
 
     def resetControl(self):
         for i in range(nd.N_liquid):
-            self.liquid.v[i] = random.uniform(15.5, 16) * mV
+            self.liquid.v[i] = random.uniform(8, 16.5) * mV
 
 
     def computeStateMatrixControl(self):
@@ -131,7 +139,7 @@ class Liquid():
         else:
             finalUpperBound = nd.simLength
 
-        while(upperbound < nd.simLength):
+        while(upperbound <= nd.simLength):
             # if lowerbound == nd.simLength:
             #     break
             spikeCount = 0

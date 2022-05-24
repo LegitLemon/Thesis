@@ -26,7 +26,7 @@ class SignalEncoder:
         # self.unspikedPatterns.append([signal.sawtooth(n / 10) for n in range(self.T)])
         stop = int(nd.simLength/ms)
         n = np.linspace(start=0, stop=5, num=stop)
-        self.unspikedPatterns.append(np.sin(2.5*np.pi*n)+1)
+        self.unspikedPatterns.append(np.sin(2*np.pi*n)+1)
         self.unspikedPatterns.append(signal.sawtooth(8*n)+1)
         self.unspikedPatterns.append(np.cos(2*np.pi*n)+1)
         self.unspikedPatterns.append(signal.square(4*n)+1)
@@ -63,6 +63,7 @@ class SignalEncoder:
         normalizedSpikeTrain = [x for x in self.spikedPatterns[index]]
         plt.plot(normalizedSpikeTrain, y, marker='|')
         plt.plot(self.unspikedPatterns[index])
+        plt.savefig("Plots/encodedAnalog.png")
         plt.show()
 
     def plotEncodedSpikesSignals(self):

@@ -64,8 +64,10 @@ class Optimiser:
     #         B = np.hstack((B, b))
     #     return B
     #
+
     # def update_conceptor(self, j):
     #     alpha = self.rnn.conceptors[0].alpha
     #     term1 = self.rnn.reservoir - np.dot(self.rnn.conceptors[j].C, self.rnn.reservoir.dot(self.rnn.reservoir.transpose()))
     #     term2 = alpha**-2*self.rnn.conceptors[j].C
     #     self.rnn.conceptors[j].C += self.lamb*(term1-term2)
+
