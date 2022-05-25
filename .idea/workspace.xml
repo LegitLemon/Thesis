@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics." />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="21uc0NcpRoYyP4NipLHQmhGgGNI" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="" />
+      <created>1638794189131</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1638794189131</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Implemented dodgy ESP">
+      <created>1639047613291</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1639047613291</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Implemented ridge regression">
+      <created>1639054893678</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1639054893678</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Training both matrices">
+      <created>1639058076934</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1639058076934</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Initial commit Conceptor.py class">
+      <created>1639058929617</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1639058929617</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Initial commit Conceptor.py class">
+      <created>1639140542393</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1639140542393</updated>
+    </task>
+    <task id="LOCAL-00006" summary="still have weird bug">
+      <created>1639144437730</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1639144437730</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fixed bug">
+      <created>1639146468343</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1639146468343</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fixed bug">
+      <created>1639398859836</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1639398859836</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fixed bug">
+      <created>1639409758410</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1639409758411</updated>
+    </task>
+    <task id="LOCAL-00010" summary="merge">
+      <created>1640437644761</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1640437644761</updated>
+    </task>
+    <task id="LOCAL-00011" summary="changes">
+      <created>1641295674811</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1641295674812</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Create empty branch">
+      <created>1644678051271</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1644678051271</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Create empty branch">
+      <created>1645116744899</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1645116744899</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Spiking eq outside decleration">
+      <created>1645443742868</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1645443742869</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Set out simulation structure">
+      <created>1645444643943</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1645444643943</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Parameters Haass 2002">
+      <created>1645613182520</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1645613182520</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics.">
+      <created>1645618139616</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1645618139616</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics.">
+      <created>1653480389715</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1653480389715</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Implemented dodgy ESP" />
+    <MESSAGE value="Implemented ridge regression" />
+    <MESSAGE value="Training both matrices" />
+    <MESSAGE value="Initial commit Conceptor.py class" />
+    <MESSAGE value="still have weird bug" />
+    <MESSAGE value="fixed bug" />
+    <MESSAGE value="merge" />
+    <MESSAGE value="changes" />
+    <MESSAGE value="Create empty branch" />
+    <MESSAGE value="Spiking eq outside decleration" />
+    <MESSAGE value="Set out simulation structure" />
+    <MESSAGE value="Parameters Haass 2002" />
+    <MESSAGE value="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics." />
+    <option name="LAST_COMMIT_MESSAGE" value="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics." />
+  </component>
+</project>
