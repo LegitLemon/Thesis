@@ -9,15 +9,14 @@ def leaky_esn_conceptor(state, t, tau, a_input, w_connec, w_input, w_output, con
     decay_input = np.dot(-a_input, x)
 
     # input_driven = np.dot(w_input, 2*np.sin(t/20))
+    # new_state_input = np.tanh(old_state_input)
+
     old_state_input = np.dot(w_connec, x)
     new_state_input = np.dot(conceptor, np.tanh(old_state_input))
 
     dxdt = (1/tau)*(decay_input + new_state_input)
 
-    y = np.dot(w_output, dxdt)
-
-    return np.append(dxdt, y)
-
+    return dxdt
 
 def leaky_esn(state, t, tau, a_input, w_connec, w_input, w_output):
     x = state[:N]
@@ -32,9 +31,11 @@ def leaky_esn(state, t, tau, a_input, w_connec, w_input, w_output):
 
     dxdt = (1/tau)*(decay_input + new_state_input)
 
-    y = np.dot(w_output, dxdt)
+    # y = np.dot(w_output, dxdt)
 
-    return np.append(dxdt, y)
+    # return np.append(dxdt, y)
+    return dxdt
+
 
 def ridge_regression(X, P, rho):
     W_1 = np.linalg.inv((np.dot(X, X.transpose()) + rho*np.identity(N)))
@@ -50,21 +51,20 @@ def compute_output_weights(trajectories):
     X = np.array(state_matrix)
     print(X.shape)
 
-    P = trajectories[washout_time:, N]
-    print(P.shape)
-
+    P = np.array(2 * np.sin(t / 20))
+    P = P[:washout_time]
     regularisation_constant_readouts = 0.01
-    output_weights = ridge_regression(X, P, regularisation_constant_readouts)
+    output_weights_comp = ridge_regression(X, P, regularisation_constant_readouts)
 
-    plt.plot(output_weights, '.')
+    plt.plot(output_weights_comp, '.')
     plt.title("computed readout weights")
     plt.xlabel("neuron index")
     plt.ylabel("computed value")
     plt.show()
-    return output_weights
+    return output_weights_comp
 
 def compute_loading_weights(trajectories):
-    regularisation_consant_internal = 0.1
+    regularisation_constant_internal = 0.0001
 
     state_matrix_delayed = []
     state_matrix = []
@@ -73,14 +73,14 @@ def compute_loading_weights(trajectories):
         state_matrix_delayed.append(trajectories[washout_time-1:-1, i])
 
     X = np.array(state_matrix)
-    X_tilde = np.array(state_matrix)
+    X_tilde = np.array(state_matrix_delayed)
 
     P = np.arctan(X)
 
-    return ridge_regression(X_tilde, P, regularisation_consant_internal)
+    return ridge_regression(X_tilde, P, regularisation_constant_internal)
 
 def compute_conceptor(trajectories):
-    aperture = 1
+    aperture = 100
     state_matrix = []
     for i in range(N):
         state_matrix.append(trajectories[washout_time:, i])
@@ -94,7 +94,7 @@ def compute_conceptor(trajectories):
 def plot_liquid_states(trajectories):
     for i in range(6):
         index = random.randint(0, N-1)
-        plt.plot(t, trajectories[:,index], label=i)
+        plt.plot(t, trajectories[:, index], label=i)
     plt.plot(t, np.sin(t/10), label="input signal")
     plt.xlabel('time')
     plt.title(f'Neuron states, tau={tau}, a=${a_internal}, N=${N}')
@@ -103,9 +103,16 @@ def plot_liquid_states(trajectories):
     plt.show()
 
 
-def plot_output(output):
-    plt.plot(t, output)
-    plt.plot(t, np.sin(t/20), label="input signal")
+def plot_output(trajectories, used_weights):
+    # output1 = trajectories[:, N]
+    output2 = []
+    for state in trajectories:
+        output_point = np.dot(used_weights, state)
+        output2.append(output_point)
+
+    # plt.plot(t, output1)
+    plt.plot(t, output2, label="test")
+    plt.plot(t, 2*np.sin(t/20), label="input signal")
     plt.xlabel('time')
     plt.title(f'System output, tau={tau}, a=${a_internal}, N=${N}')
     plt.ylabel('y(t)')
@@ -122,7 +129,7 @@ a_internal = 0.2
 tau = 2
 
 # generate initial conditions
-initial_conditions_neurons = np.random.standard_normal(N+1)
+initial_conditions_neurons = np.random.standard_normal(N)
 # generate network settings
 internal_weights = np.random.standard_normal(size=(N, N))
 input_weights = np.random.normal(0, 1, size=(N))
@@ -145,24 +152,28 @@ t = np.linspace(0, time, num=time*sampling_frequency)
 parameters_training = (tau, leaking_matrix, internal_weights, input_weights, output_weights)
 
 y_training = odeint(leaky_esn, initial_conditions_neurons, t, parameters_training)
-
 plot_liquid_states(y_training)
-plot_output(y_training[:, N])
+plot_output(y_training, output_weights)
 
 # prepare the conceptor and load the patterns
 output_weights_computed = compute_output_weights(y_training)
 internal_weights_computed = compute_loading_weights(y_training)
 conceptor = compute_conceptor(y_training)
 
-# Test the training of the output weights and loading
+# Test the training of the output weights
 parameters_test_system = (tau, leaking_matrix, internal_weights, input_weights, output_weights_computed)
-y_test_system = odeint(leaky_esn, initial_conditions_neurons, t, parameters_test_system)
-plot_output(y_test_system[:, N])
+y_test_system_readout = odeint(leaky_esn, initial_conditions_neurons, t, parameters_test_system)
+plot_output(y_test_system_readout, output_weights_computed)
+
+# Test the loading
+parameters_test_system = (tau, leaking_matrix, internal_weights, input_weights, output_weights_computed)
+y_test_system_loading = odeint(leaky_esn, initial_conditions_neurons, t, parameters_test_system)
+plot_output(y_test_system_loading, output_weights_computed)
 
 # Test the conceptor retrieval
-# parameters_test_conceptor = (tau, leaking_matrix, internal_weights_computed, input_weights, output_weights_computed, conceptor)
-# y_test_conceptor = odeint(leaky_esn_conceptor, initial_conditions_neurons, t, parameters_test_conceptor)
-# plot_output(y_test[:, N])
+parameters_test_conceptor = (tau, leaking_matrix, internal_weights_computed, input_weights, output_weights_computed, conceptor)
+y_test_conceptor = odeint(leaky_esn_conceptor, initial_conditions_neurons, t, parameters_test_conceptor)
+plot_output(y_test_conceptor, output_weights_computed)
 
 
 
