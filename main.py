@@ -15,6 +15,7 @@ def plot_aperture_response(training_data, internal_weights_computed, P, leaking_
 
     projection_data_output = []
     negation_data_output = []
+    no_control_data_output = []
     quotes = []
     for alpha in aperture_values:
         conceptor = compute_conceptor(training_data, alpha)
@@ -24,16 +25,20 @@ def plot_aperture_response(training_data, internal_weights_computed, P, leaking_
 
         projection_data = odeint(leaky_esn_conceptor_projection, np.random.standard_normal(N), t, parameters_test_conceptor)
         negation_data = odeint(leaky_esn_conceptor_negation, np.random.standard_normal(N), t, parameters_test_conceptor)
+        no_control_data = odeint(leaky_esn_no_control, np.random.standard_normal(N), t, parameters_test_conceptor)
 
         projection_point = []
         negation_point = []
+        no_control_point = []
 
         for step_number in range(len(projection_data)):
             projection_point.append(np.dot(output_weights_used, projection_data[step_number]))
             negation_point.append(np.dot(output_weights_used, negation_data[step_number]))
+            no_control_point.append(np.dot(output_weights_used, no_control_data[step_number]))
 
         projection_data_output.append(projection_point)
         negation_data_output.append(negation_point)
+        no_control_data_output.append(no_control_point)
 
     fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
     # for idx, alpha in enumerate(projection_data_output):
@@ -47,31 +52,47 @@ def plot_aperture_response(training_data, internal_weights_computed, P, leaking_
     axs[idx][right].set_title(f"alpha= {aperture_values[idx]} quota = {quotes[idx]}")
     axs[idx][right].plot(t, projection_data_output[idx], label="projection")
     axs[idx][right].plot(t, negation_data_output[idx], label="negation")
+    axs[idx][right].plot(t, no_control_data_output[idx], label="no control")
     axs[idx][right].plot(t, 2*np.sin(t/20), label="input signal")
 
     right = 1
     axs[idx][right].set_title(f"alpha= {aperture_values[1]} quota = {quotes[1]}")
-    axs[idx][right].plot(t, projection_data_output[idx], label="projection")
-    axs[idx][right].plot(t, negation_data_output[idx], label="negation")
+    axs[idx][right].plot(t, projection_data_output[1], label="projection")
+    axs[idx][right].plot(t, negation_data_output[1], label="negation")
+    axs[idx][right].plot(t, no_control_data_output[1], label="no control")
+
     axs[idx][right].plot(t, 2*np.sin(t/20), label="input signal")
 
     right = 0
     idx = 1
     axs[idx][right].set_title(f"alpha= {aperture_values[2]} quota = {quotes[2]}")
-    axs[idx][right].plot(t, projection_data_output[idx], label="projection")
-    axs[idx][right].plot(t, negation_data_output[idx], label="negation")
+    axs[idx][right].plot(t, projection_data_output[2], label="projection")
+    axs[idx][right].plot(t, negation_data_output[2], label="negation")
     axs[idx][right].plot(t, 2*np.sin(t/20), label="input signal")
+    axs[idx][right].plot(t, no_control_data_output[2], label="no control")
 
     right = 1
     axs[idx][right].set_title(f"alpha= {aperture_values[3]} quota = {quotes[3]}")
-    axs[idx][right].plot(t, projection_data_output[idx], label="projection")
-    axs[idx][right].plot(t, negation_data_output[idx], label="negation")
+    axs[idx][right].plot(t, projection_data_output[3], label="projection")
+    axs[idx][right].plot(t, negation_data_output[3], label="negation")
     axs[idx][right].plot(t, 2*np.sin(t/20), label="input signal")
+    axs[idx][right].plot(t, no_control_data_output[3], label="no control")
 
 
     print(quotes)
     plt.legend()
     plt.show()
+
+def sweep_loading(y_training, leaking_matrix, input_weights, output_weights_computed, bias_vector):
+    loading_options = np.linspace(0.05, 0.1, num=5)
+    for option in loading_options:
+        print(option)
+        internal_weights_computed = compute_loading_weights(y_training, option)
+        parameters_test_system = (tau, leaking_matrix, internal_weights_computed, input_weights, output_weights_computed, bias_vector)
+        y_test_system_loading = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_test_system)
+        plot_liquid_states(y_test_system_loading)
+        plot_output(y_test_system_loading, output_weights_computed)
+
 
 def main():
     # generate initial conditions
@@ -136,6 +157,8 @@ def main():
     y_test_system_readout = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_test_system)
     plot_output(y_test_system_readout, output_weights_computed)
 
+    # sweep_loading(y_training, leaking_matrix, input_weights, output_weights_computed, bias_vector)
+
     # Test the loading. Use loaded reservoir and signal input, no conceptor
     parameters_test_system = (tau, leaking_matrix, internal_weights_computed, input_weights, output_weights_computed, bias_vector)
     y_test_system_loading = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_test_system)
@@ -146,10 +169,11 @@ def main():
     parameters_test_conceptor = (tau, leaking_matrix, internal_weights_computed, conceptor, P)
     y_test_conceptor_projection = odeint(leaky_esn_conceptor_projection, np.random.standard_normal(N), t, parameters_test_conceptor)
     y_test_conceptor_negation = odeint(leaky_esn_conceptor_negation, np.random.standard_normal(N), t, parameters_test_conceptor)
+    y_test_conceptor_no_control = odeint(leaky_esn_no_control, np.random.standard_normal(N), t, parameters_test_conceptor)
 
     plot_liquid_states(y_test_conceptor_projection)
     plot_control_errors(6)
-    plot_output_retrieval(y_test_conceptor_projection, y_test_conceptor_negation, output_weights_computed)
+    plot_output_retrieval(y_test_conceptor_projection, y_test_conceptor_negation, y_test_conceptor_no_control, output_weights_computed)
 
     plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)
 

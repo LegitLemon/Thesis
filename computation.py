@@ -30,8 +30,7 @@ def compute_output_weights(trajectories):
     plt.show()
     return output_weights_comp
 
-def compute_loading_weights(trajectories):
-    regularisation_constant_internal = 0.1
+def compute_loading_weights(trajectories, regularisation_constant_internal = 0.08):
 
     state_matrix_delayed = []
     state_matrix = []

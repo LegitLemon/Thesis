@@ -18,3 +18,4 @@ conceptor_distance_projection = []
 
 control_errors_negation = []
 conceptor_distance_negation = []
+conceptor_distance_no_control = []

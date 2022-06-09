@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics.">
-      <change afterPath="$PROJECT_DIR$/computation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dynamics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/networkParameters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
+    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contESN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/computation.py" beforeDir="false" afterPath="$PROJECT_DIR$/computation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dynamics.py" beforeDir="false" afterPath="$PROJECT_DIR$/dynamics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/networkParameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/networkParameters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653480389715</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="changes">
+      <created>1654775409201</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1654775409201</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -243,12 +249,12 @@
     <MESSAGE value="still have weird bug" />
     <MESSAGE value="fixed bug" />
     <MESSAGE value="merge" />
-    <MESSAGE value="changes" />
     <MESSAGE value="Create empty branch" />
     <MESSAGE value="Spiking eq outside decleration" />
     <MESSAGE value="Set out simulation structure" />
     <MESSAGE value="Parameters Haass 2002" />
     <MESSAGE value="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics." />
-    <option name="LAST_COMMIT_MESSAGE" value="Initialisitation of LSM, Connection LSM and outputPopultaion. More Detailed neurondynamics." />
+    <MESSAGE value="changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="changes" />
   </component>
 </project>

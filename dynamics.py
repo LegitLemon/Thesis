@@ -25,17 +25,11 @@ def leaky_esn_conceptor_projection(state, t, tau, a_input, w_connec, conceptor, 
 def leaky_esn_conceptor_negation(state, t, tau, a_input, w_connec, conceptor, P):
     x = state[:N]
 
-    # decay_input = np.dot(np.dot(-a_input, conceptor), x)
     decay_input = np.dot(-a_input, x)
-
-    # old_state_input = np.dot(np.dot(w_connec, conceptor), x)
-
     new_state_input = np.tanh(np.dot(w_connec, x))
     conceptorProjection = np.dot(conceptor, (decay_input+new_state_input))
-    # new_state_input = np.tanh(old_state_input)
 
     control_term = np.dot((np.identity(N)-conceptor), x)
-
     control_errors_negation.append(control_term)
 
     dist = np.linalg.norm(np.dot(conceptor, x) - x)
@@ -44,6 +38,22 @@ def leaky_esn_conceptor_negation(state, t, tau, a_input, w_connec, conceptor, P)
     dxdt = (1/tau)*(conceptorProjection - control_term)
 
     return dxdt
+
+
+def leaky_esn_no_control(state, t, tau, a_input, w_connec, conceptor, P):
+    x = state[:N]
+    decay_input = np.dot(-a_input, x)
+    new_state_input = np.tanh(np.dot(w_connec, x))
+    conceptorProjection = np.dot(conceptor, (decay_input+new_state_input))
+
+    dist = np.linalg.norm(np.dot(conceptor, x) - x)
+    conceptor_distance_no_control.append(dist)
+
+    dxdt = (1/tau)*(conceptorProjection)
+
+    return dxdt
+
+
 
 
 def leaky_esn(state, t, tau, a_input, w_connec, w_input, w_output, bias):

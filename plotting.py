@@ -49,9 +49,10 @@ def plot_output(trajectories, used_weights):
     plt.legend()
     plt.show()
 
-def plot_output_retrieval(trajectories_projection, trajectories_negation, used_weights):
+def plot_output_retrieval(trajectories_projection, trajectories_negation, trajectories_no_control, used_weights):
     output1 = []
     output2 = []
+    output3 = []
     for state_number in range(len(trajectories_negation)):
         output_point_projection = np.dot(used_weights, trajectories_projection[state_number])
         output1.append(output_point_projection)
@@ -59,9 +60,14 @@ def plot_output_retrieval(trajectories_projection, trajectories_negation, used_w
         output_point_negation = np.dot(used_weights, trajectories_negation[state_number])
         output2.append(output_point_negation)
 
+        output_point_no_control = np.dot(used_weights, trajectories_no_control[state_number])
+        output3.append(output_point_no_control)
+
+
     # plt.plot(t, output1)
     plt.plot(t, output1, label="projection retrieval")
     plt.plot(t, output2, label="negation retrieval")
+    plt.plot(t, output3, label="no control")
     plt.plot(t, 2*np.sin(t/20), label="goal signal")
     plt.xlabel('time')
     plt.title(f'System output, tau={tau}, a=${a_internal}, N=${N}')
