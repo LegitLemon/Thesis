@@ -132,38 +132,37 @@ def main():
 
     P = np.identity(N)-term2
 
-
     print("state matrix rank: ", state_matrix_rank)
     print("Q:", np.linalg.matrix_rank(Q))
 
-    plot_liquid_states(y_training)
-    plot_output(y_training, output_weights)
+    plot_liquid_states(y_training, title="Neuron status during training")
+    plot_output(y_training, output_weights, title="untrained output signal")
 
     # prepare the conceptor and load the patterns
     output_weights_computed = compute_output_weights(y_training)
     internal_weights_computed = compute_loading_weights(y_training)
 
-    desired_spectral_radius_internal_weights = 1.2
+    desired_spectral_radius_internal_weights = 1.0
     eigenvalues_internal_matrix = eigvals(internal_weights_computed)
     scaling_factor_internal_weights = max(abs(eigenvalues))
     print(scaling_factor_internal_weights)
-    # internal_weights_computed *= desired_spectral_radius_internal_weights/scaling_factor_internal_weights
+    internal_weights_computed *= desired_spectral_radius_internal_weights/scaling_factor_internal_weights
 
-    aperture=60
+    aperture= 60
     conceptor = compute_conceptor(y_training, aperture)
 
     # Test the training of the output weights
     parameters_test_system = (tau, leaking_matrix, internal_weights, input_weights, output_weights_computed, bias_vector)
     y_test_system_readout = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_test_system)
-    plot_output(y_test_system_readout, output_weights_computed)
+    plot_output(y_test_system_readout, output_weights_computed, "output trained readout weights on signal, no loading")
 
     # sweep_loading(y_training, leaking_matrix, input_weights, output_weights_computed, bias_vector)
 
     # Test the loading. Use loaded reservoir and signal input, no conceptor
     parameters_test_system = (tau, leaking_matrix, internal_weights_computed, input_weights, output_weights_computed, bias_vector)
     y_test_system_loading = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_test_system)
-    plot_liquid_states(y_test_system_loading)
-    plot_output(y_test_system_loading, output_weights_computed)
+    plot_liquid_states(y_test_system_loading, "liquid status during loading")
+    plot_output(y_test_system_loading, output_weights_computed, "loading output")
 
     # Test conceptor retrieval, use conceptor in update loop.
     parameters_test_conceptor = (tau, leaking_matrix, internal_weights_computed, conceptor, P)
@@ -171,11 +170,11 @@ def main():
     y_test_conceptor_negation = odeint(leaky_esn_conceptor_negation, np.random.standard_normal(N), t, parameters_test_conceptor)
     y_test_conceptor_no_control = odeint(leaky_esn_no_control, np.random.standard_normal(N), t, parameters_test_conceptor)
 
-    plot_liquid_states(y_test_conceptor_projection)
+    plot_liquid_states(y_test_conceptor_projection, "Liquid states during retrieval")
     plot_control_errors(6)
-    plot_output_retrieval(y_test_conceptor_projection, y_test_conceptor_negation, y_test_conceptor_no_control, output_weights_computed)
+    plot_output_retrieval(y_test_conceptor_projection, y_test_conceptor_negation, y_test_conceptor_no_control, output_weights_computed, title="Pattern regeneration system output")
 
-    plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)
+    # plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)
 
 if __name__ == "__main__":
     main()

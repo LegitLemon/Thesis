@@ -1,7 +1,10 @@
 from networkParameters import *
 import random
 import matplotlib.pyplot as plt
-def plot_control_errors(amount):
+
+path= "plots/"
+
+def plot_control_errors(amount, title="Difference between conceptor projection and current state"):
     for i in range(amount):
         index = random.randint(0, N-1)
         print(index)
@@ -17,23 +20,25 @@ def plot_control_errors(amount):
 
     plt.plot(conceptor_distance_projection)
     plt.plot(conceptor_distance_negation)
-    plt.title("Difference between conceptor projection and current state")
+    plt.title(title)
+    plt.savefig(path+title)
     plt.show()
 
 
-def plot_liquid_states(trajectories):
+def plot_liquid_states(trajectories, title=f'Neuron states, tau={tau}, a=${a_internal}, N=${N}'):
     for i in range(6):
         index = random.randint(0, N-1)
         plt.plot(t, trajectories[:, index], label=i)
     plt.plot(t, np.sin(t/20), label="input signal")
     plt.xlabel('time')
-    plt.title(f'Neuron states, tau={tau}, a=${a_internal}, N=${N}')
+    plt.title(title)
     plt.ylabel('x(t)')
     plt.legend()
+    plt.savefig(path+title)
     plt.show()
 
 
-def plot_output(trajectories, used_weights):
+def plot_output(trajectories, used_weights, title=f'System output, tau={tau}, a=${a_internal}, N=${N}'):
     # output1 = trajectories[:, N]
     output2 = []
     for state in trajectories:
@@ -44,12 +49,13 @@ def plot_output(trajectories, used_weights):
     plt.plot(t, output2, label="test")
     plt.plot(t, 2*np.sin(t/20), label="input signal")
     plt.xlabel('time')
-    plt.title(f'System output, tau={tau}, a=${a_internal}, N=${N}')
+    plt.title(title)
     plt.ylabel('y(t)')
     plt.legend()
+    plt.savefig(path+title)
     plt.show()
 
-def plot_output_retrieval(trajectories_projection, trajectories_negation, trajectories_no_control, used_weights):
+def plot_output_retrieval(trajectories_projection, trajectories_negation, trajectories_no_control, used_weights, title=f'System output, tau={tau}, a=${a_internal}, N=${N}'):
     output1 = []
     output2 = []
     output3 = []
@@ -70,9 +76,10 @@ def plot_output_retrieval(trajectories_projection, trajectories_negation, trajec
     plt.plot(t, output3, label="no control")
     plt.plot(t, 2*np.sin(t/20), label="goal signal")
     plt.xlabel('time')
-    plt.title(f'System output, tau={tau}, a=${a_internal}, N=${N}')
+    plt.title(title)
     plt.ylabel('y(t)')
     plt.legend()
+    plt.savefig(path+title)
     plt.show()
 
 
