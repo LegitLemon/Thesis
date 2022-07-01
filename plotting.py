@@ -98,7 +98,7 @@ def plot_states_with_output(trajectories, used_weights, input, title):
         output_point = np.dot(used_weights, state)
         output.append(output_point)
 
-    fig, axs = plt.subplots(2, sharex=True, sharey=True)
+    fig, axs = plt.subplots(2, sharex=True, sharey=False)
     axs[0].plot(t, output, label="Conceptor retrieval")
     axs[0].plot(t, input, label="Goal signal")
 

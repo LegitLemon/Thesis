@@ -108,8 +108,9 @@ def conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, o
     for i in range(number_of_patterns):
         conceptor = conceptors[i]
         parameters_test_conceptor = (tau, leaking_matrix, internal_weights_computed, conceptor)
-        y_test_conceptor_negation = odeint(leaky_esn_conceptor_negation, np.random.standard_normal(N), t, parameters_test_conceptor)
-        y_test_conceptor_no_control = odeint(leaky_esn_no_control, np.random.standard_normal(N), t, parameters_test_conceptor)
+        initial_condition = np.random.standard_normal(N)
+        y_test_conceptor_negation = odeint(leaky_esn_conceptor_negation, initial_condition, t, parameters_test_conceptor)
+        y_test_conceptor_no_control = odeint(leaky_esn_no_control, initial_condition, t, parameters_test_conceptor)
 
         plot_states_with_output(y_test_conceptor_negation, output_weights, get_input(i, t), "plot with control")
         plot_states_with_output(y_test_conceptor_no_control, output_weights, get_input(i, t), "plot without control")
@@ -157,9 +158,6 @@ def main():
     # Test conceptor retrieval
     conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, output_weights_computed)
     # plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)
-
-
-
 
 if __name__ == "__main__":
     main()

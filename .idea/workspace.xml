@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="saving plots">
+    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="Loading different patterns">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computation.py" beforeDir="false" afterPath="$PROJECT_DIR$/computation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dynamics.py" beforeDir="false" afterPath="$PROJECT_DIR$/dynamics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/networkParameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/networkParameters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -228,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656319895490</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Loading different patterns">
+      <created>1656345630328</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1656345630328</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -271,6 +275,7 @@
     <MESSAGE value="changes" />
     <MESSAGE value="no control" />
     <MESSAGE value="saving plots" />
-    <option name="LAST_COMMIT_MESSAGE" value="saving plots" />
+    <MESSAGE value="Loading different patterns" />
+    <option name="LAST_COMMIT_MESSAGE" value="Loading different patterns" />
   </component>
 </project>
