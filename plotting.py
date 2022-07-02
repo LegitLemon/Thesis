@@ -109,6 +109,17 @@ def plot_states_with_output(trajectories, used_weights, input, title):
     plt.title(title)
     plt.show()
 
+def plot_input_data_attractors(input_data, title="Input data attractor"):
+    v1 = []
+    v2 = []
+    for val in input_data.keys():
+        vector = input_data[val]
+        v1.append(vector[0])
+        v2.append(vector[1])
+    plt.plot(v1, v2)
+    plt.title(title)
+    plt.legend()
+    plt.show()
 # def plot_attractors():
 #     initial_condition = [0, 1, 1]
 #     parameters = (t)

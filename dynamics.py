@@ -116,7 +116,7 @@ def lorenz(state, t, s=10, r=28, b=2.667):
     return [x_dot, y_dot, z_dot]
 
 
-def mackey_glass(length=len(t), x0=None, a=0.2, b=0.1, c=10.0, tau=17.0,
+def mackey_glass(length=len(t)+18, x0=None, a=0.2, b=0.1, c=10.0, tau=17.0,
                  n=1000, sample=0.46, discard=250):
     sample = int(n * sample / tau)
     grids = n * discard + sample * length
@@ -136,13 +136,39 @@ def mackey_glass(length=len(t), x0=None, a=0.2, b=0.1, c=10.0, tau=17.0,
     return x[n * discard::sample]
 
 
-def generate_lorenz_input():
-    initial_condition = [0, 1, 1]
+def couple_pairs(data, tau=17):
+    x, y = [], []
+    for idx, dat in enumerate(data):
+        if idx > 17:
+            x.append(dat)
+            y.append(data[idx-tau])
+    return x, y
+
+def generate_mg_data():
+    mackey_glass_data = mackey_glass()
+    x_data, z_data = couple_pairs(mackey_glass_data)
+    x_data = normalise_time_series(x_data)
+    z_data = normalise_time_series(z_data)
+    input = []
+    for idx, point in enumerate(x_data):
+        input.append([x_data[idx], z_data[idx]])
+
+    data_dict = {}
+    for idx, point in enumerate(t):
+        data_dict[str(point)] = input[idx]
+
+    return data_dict
+
+def generate_pattern_matrix_from_dict(attractor_dict):
+    input = [attractor_dict[key] for key in attractor_dict.keys()]
+    return input
+
+def generate_attractor_data(initial_condition=[0,1,1], attractor=lorenz, index1=0, index2=2):
     parameters = (t)
-    data_lorenz = odeint(lorenz, initial_condition, parameters)
+    data_lorenz = odeint(attractor, initial_condition, parameters)
     print(np.array([data_lorenz.shape]))
-    x_data = [x[0] for x in data_lorenz]
-    z_data = [z[2] for z in data_lorenz]
+    x_data = [x[index1] for x in data_lorenz]
+    z_data = [z[index2] for z in data_lorenz]
     x_data = normalise_time_series(x_data)
     z_data = normalise_time_series(z_data)
 
@@ -157,29 +183,37 @@ def generate_lorenz_input():
     return data_dict
 
 
-lorenz_input_series = generate_lorenz_input()
+lorenz_input_series = generate_attractor_data()
+rossler_input_series = generate_attractor_data([1, 1, 0], rossler, 0, 1)
+mg_input_series = generate_mg_data()
 
+def get_attractor_input(t, input_number):
+    temp_data = None 
+    if input_number == 0:
+        temp_data = lorenz_input_series
+    if input_number == 1:
+        temp_data = rossler_input_series
+    if input_number == 2:
+        temp_data = mg_input_series
 
-def get_lorenz_input(t):
-    val = lorenz_input_series.get(t)
+    val = temp_data.get(t)
     if val is None:
-        for time in lorenz_input_series.keys():
+        for time in temp_data.keys():
             if float(time) > t:
-                # print(t, time)
-                val = lorenz_input_series.get(time)
+                val = temp_data.get(time)
                 break
     if val is None:
         print(t)
-        val = get_lorenz_input(t-1)
+        val = get_attractor_input(t-0.1, input_number)
     return val
 
 
-def leaky_esn_two_inputs(state, t, tau, a_input, w_connec, w_input, input):
+def leaky_esn_two_inputs(state, t, tau, a_input, w_connec, w_input, input_number):
     print(t)
     x = state[:N]
     decay_input = np.dot(-a_input, x)
 
-    input_driven = np.dot(w_input, get_lorenz_input(t))
+    input_driven = np.dot(w_input, get_attractor_input(t, input_number))
 
     old_state_input = np.dot(w_connec, x)
 

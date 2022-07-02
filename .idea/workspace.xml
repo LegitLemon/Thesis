@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="changes">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dynamics.py" beforeDir="false" afterPath="$PROJECT_DIR$/dynamics.py" afterDir="false" />
-    </list>
+    <list default="true" id="49f56021-5329-4272-a6bc-081eb0cdfb84" name="Default Changelist" comment="changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

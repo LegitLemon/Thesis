@@ -1,8 +1,8 @@
 import numpy as np
 
-number_of_patterns = 2
+number_of_patterns = 3
 
-washout_time = 1500
+washout_time = 10
 N = 500
 a_internal = 0.2
 tau = 2
@@ -11,7 +11,7 @@ desired_spectral_radius = 0.4
 
 # Initialise timescale
 sampling_frequency = 10
-time = 10
+time = 5
 t = np.linspace(0, time, num=time*sampling_frequency)
 
 

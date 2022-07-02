@@ -23,12 +23,12 @@ def compute_delayed_state_matrix(trajectories):
     return X_tilde
 
 
-def compute_output_weights(trajectories):
+def compute_output_weights(trajectories, inputs):
     P = []
     X = []
     for i in range(number_of_patterns):
         current_state_matrix = compute_state_matrix(trajectories[i])
-        current_pattern = get_input(i, t)[:washout_time]
+        current_pattern = inputs[i]
         if i == 0:
             X = current_state_matrix
             P = current_pattern
