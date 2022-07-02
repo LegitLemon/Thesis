@@ -38,3 +38,45 @@ conceptor_distance_no_control = []
 # print("Q:", np.linalg.matrix_rank(Q))
 # plot_liquid_states(y_training, title="Neuron status during training")
 # plot_output(y_training, output_weights, title="untrained output signal")
+
+# # generate network settings
+# internal_weights = np.random.standard_normal(size=(N, N))
+# input_weights = np.random.normal(0, 1, size=(N))
+# output_weights = np.random.normal(0, 1, size=(N)).transpose()
+# leaking_matrix = np.identity(N)*a_internal
+# bias_vector = np.random.normal(0, 1, size=(N))
+#
+# # scale internal weights
+# eigenvalues = eigvals(internal_weights)
+# scaling_factor = max(abs(eigenvalues))
+# print(scaling_factor)
+# internal_weights *= desired_spectral_radius/scaling_factor
+#
+# training_data = []
+# for i in range(number_of_patterns):
+#     parameters_training = (tau, leaking_matrix, internal_weights, input_weights, i)
+#     y_training = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_training)
+#     training_data.append(y_training)
+#
+#
+# # prepare the conceptor and load the patterns
+# output_weights_computed = compute_output_weights(training_data)
+# plot_neuron_states(training_data)
+#
+# test_data_output = []
+# for i in range(number_of_patterns):
+#     parameters_training = (tau, leaking_matrix, internal_weights, input_weights, i)
+#     y_training = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_training)
+#     test_data_output.append(y_training)
+#
+# test_training_output_weights(test_data_output, output_weights_computed)
+#
+# regularisation_internal = 10
+# internal_weights_computed = compute_loading_weights(training_data, regularisation_internal)
+#
+# aperture = 6000
+# conceptors = compute_conceptors(training_data, aperture)
+#
+# # Test conceptor retrieval
+# conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, output_weights_computed)
+# # plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)

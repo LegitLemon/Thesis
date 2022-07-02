@@ -116,48 +116,56 @@ def conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, o
         plot_states_with_output(y_test_conceptor_no_control, output_weights, get_input(i, t), "plot without control")
     # plot_control_errors(6)
 
+
+# Normalise data to be within 0,1
+def normalise_time_series(data):
+    min_val = min(data)
+    max_val = max(data)
+    for idx, val in enumerate(data):
+        data[idx] = (val-min_val)/(max_val-min_val)
+    return data
+
+def couple_pairs(data, tau=17):
+    x, y = [], []
+    for idx, dat in enumerate(data):
+        if idx > 17:
+            x.append(dat)
+            y.append(data[idx-tau])
+    return x, y
+
 def main():
-    # generate network settings
-    internal_weights = np.random.standard_normal(size=(N, N))
-    input_weights = np.random.normal(0, 1, size=(N))
-    output_weights = np.random.normal(0, 1, size=(N)).transpose()
-    leaking_matrix = np.identity(N)*a_internal
-    bias_vector = np.random.normal(0, 1, size=(N))
+    initial_condition = [0, 1, 1]
+    parameters = (t)
+    data_lorenz = odeint(lorenz, initial_condition, parameters)
+    x_data = [x[0] for x in data_lorenz]
+    z_data = [z[2] for z in data_lorenz]
 
-    # scale internal weights
-    eigenvalues = eigvals(internal_weights)
-    scaling_factor = max(abs(eigenvalues))
-    print(scaling_factor)
-    internal_weights *= desired_spectral_radius/scaling_factor
+    x_data = normalise_time_series(x_data)
+    z_data = normalise_time_series(z_data)
 
-    training_data = []
-    for i in range(number_of_patterns):
-        parameters_training = (tau, leaking_matrix, internal_weights, input_weights, i)
-        y_training = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_training)
-        training_data.append(y_training)
+    plt.plot(x_data, z_data)
+    plt.show()
 
+    initial_condition = [1, 1, 0]
 
-    # prepare the conceptor and load the patterns
-    output_weights_computed = compute_output_weights(training_data)
-    plot_neuron_states(training_data)
+    data_rossler = odeint(rossler, initial_condition, parameters)
+    x_data = [x[0] for x in data_rossler]
+    y_data = [y[1] for y in data_rossler]
 
-    test_data_output = []
-    for i in range(number_of_patterns):
-        parameters_training = (tau, leaking_matrix, internal_weights, input_weights, i)
-        y_training = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_training)
-        test_data_output.append(y_training)
+    x_data = normalise_time_series(x_data)
+    y_data = normalise_time_series(y_data)
 
-    test_training_output_weights(test_data_output, output_weights_computed)
+    plt.plot(x_data, y_data)
+    plt.show()
 
-    regularisation_internal = 10
-    internal_weights_computed = compute_loading_weights(training_data, regularisation_internal)
+    mackey_glass_data = mackey_glass()
+    x_data, x_delayed_data = couple_pairs(mackey_glass_data)
+    x_data = normalise_time_series(x_data)
+    x_delayed_data = normalise_time_series(x_delayed_data)
 
-    aperture = 6000
-    conceptors = compute_conceptors(training_data, aperture)
+    plt.plot(x_data, x_delayed_data)
+    plt.show()
 
-    # Test conceptor retrieval
-    conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, output_weights_computed)
-    # plot_aperture_response(y_training, internal_weights_computed, P, leaking_matrix, output_weights_computed)
 
 if __name__ == "__main__":
     main()
