@@ -108,3 +108,36 @@ def plot_states_with_output(trajectories, used_weights, input, title):
 
     plt.title(title)
     plt.show()
+
+# def plot_attractors():
+#     initial_condition = [0, 1, 1]
+#     parameters = (t)
+#     data_lorenz = odeint(lorenz, initial_condition, parameters)
+#     x_data = [x[0] for x in data_lorenz]
+#     z_data = [z[2] for z in data_lorenz]
+#
+#     x_data = normalise_time_series(x_data)
+#     z_data = normalise_time_series(z_data)
+#
+#     plt.plot(x_data, z_data)
+#     plt.show()
+#
+#     initial_condition = [1, 1, 0]
+#
+#     data_rossler = odeint(rossler, initial_condition, parameters)
+#     x_data = [x[0] for x in data_rossler]
+#     y_data = [y[1] for y in data_rossler]
+#
+#     x_data = normalise_time_series(x_data)
+#     y_data = normalise_time_series(y_data)
+#
+#     plt.plot(x_data, y_data)
+#     plt.show()
+#
+#     mackey_glass_data = mackey_glass()
+#     x_data, x_delayed_data = couple_pairs(mackey_glass_data)
+#     x_data = normalise_time_series(x_data)
+#     x_delayed_data = normalise_time_series(x_delayed_data)
+#
+#     plt.plot(x_data, x_delayed_data)
+#     plt.show()

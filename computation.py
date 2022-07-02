@@ -1,7 +1,7 @@
 from networkParameters import *
 import numpy as np
 import matplotlib.pyplot as plt
-from dynamics import *
+from scipy.integrate import odeint
 
 def ridge_regression(X, P, rho):
     W_1 = np.linalg.inv((np.dot(X, X.transpose()) + rho*np.identity(N)))
@@ -78,4 +78,22 @@ def compute_conceptors(trajectories, aperture):
 
 def compute_conceptor_quota(C):
     return C.trace()/N
+
+
+
+
+def generate_rossler_input():
+    pass
+
+def generate_mg_input():
+    pass
+
+
+# Normalise data to be within 0,1
+def normalise_time_series(data):
+    min_val = min(data)
+    max_val = max(data)
+    for idx, val in enumerate(data):
+        data[idx] = (val-min_val)/(max_val-min_val)
+    return data
 

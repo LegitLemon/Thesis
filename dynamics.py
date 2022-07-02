@@ -1,5 +1,5 @@
 from networkParameters import *
-
+from computation import *
 control_constant = 50
 
 def input1(t):
@@ -82,6 +82,7 @@ def leaky_esn(state, t, tau, a_input, w_connec, w_input, input_number):
 
     dxdt = (1/tau)*(decay_input + new_state_input)
 
+
     return dxdt
 
 
@@ -108,7 +109,7 @@ def rossler(state, t, a=0.2, b=0.2, c=8):
 
 # Lorenz attractor
 def lorenz(state, t, s=10, r=28, b=2.667):
-    [x, y, z] = state
+    [x, y, z] =  state
     x_dot = s*(y - x)
     y_dot = r*x - y - x*z
     z_dot = x*y - b*z
@@ -117,30 +118,6 @@ def lorenz(state, t, s=10, r=28, b=2.667):
 
 def mackey_glass(length=len(t), x0=None, a=0.2, b=0.1, c=10.0, tau=17.0,
                  n=1000, sample=0.46, discard=250):
-    """
-    x0 : array, optional (default = random)
-        Initial condition for the discrete map.  Should be of length n.
-    a : float, optional (default = 0.2)
-        Constant a in the Mackey-Glass equation.
-    b : float, optional (default = 0.1)
-        Constant b in the Mackey-Glass equation.
-    c : float, optional (default = 10.0)
-        Constant c in the Mackey-Glass equation.
-    tau : float, optional (default = 23.0)
-        Time delay in the Mackey-Glass equation.
-    n : int, optional (default = 1000)
-        The number of discrete steps into which the interval between
-        t and t + tau should be divided.  This results in a time
-        step of tau/n and an n + 1 dimensional map.
-    sample : float, optional (default = 0.46)
-        Sampling step of the time series.  It is useful to pick
-        something between tau/100 and tau/10, with tau/sample being
-        a factor of n.  This will make sure that there are only whole
-        number indices.
-    discard : int, optional (default = 250)
-        Number of n-steps to discard in order to eliminate transients.
-        A total of n*discard steps will be discarded.
-    """
     sample = int(n * sample / tau)
     grids = n * discard + sample * length
     x = np.empty(grids)
@@ -158,4 +135,58 @@ def mackey_glass(length=len(t), x0=None, a=0.2, b=0.1, c=10.0, tau=17.0,
                                    x[i - n + 1] / (1 + x[i - n + 1] ** c))
     return x[n * discard::sample]
 
+
+def generate_lorenz_input():
+    initial_condition = [0, 1, 1]
+    parameters = (t)
+    data_lorenz = odeint(lorenz, initial_condition, parameters)
+    print(np.array([data_lorenz.shape]))
+    x_data = [x[0] for x in data_lorenz]
+    z_data = [z[2] for z in data_lorenz]
+    x_data = normalise_time_series(x_data)
+    z_data = normalise_time_series(z_data)
+
+    input = []
+    for idx, point in enumerate(x_data):
+        input.append([x_data[idx], z_data[idx]])
+
+    data_dict = {}
+    for idx, point in enumerate(t):
+        data_dict[str(point)] = input[idx]
+
+    return data_dict
+
+
+lorenz_input_series = generate_lorenz_input()
+
+
+def get_lorenz_input(t):
+    val = lorenz_input_series.get(t)
+    if val is None:
+        for time in lorenz_input_series.keys():
+            if float(time) > t:
+                # print(t, time)
+                val = lorenz_input_series.get(time)
+                break
+    if val is None:
+        print(t)
+        val = get_lorenz_input(t-1)
+    return val
+
+
+def leaky_esn_two_inputs(state, t, tau, a_input, w_connec, w_input, input):
+    print(t)
+    x = state[:N]
+    decay_input = np.dot(-a_input, x)
+
+    input_driven = np.dot(w_input, get_lorenz_input(t))
+
+    old_state_input = np.dot(w_connec, x)
+
+    new_state_input = np.tanh(input_driven + old_state_input)
+
+    dxdt = (1/tau)*(decay_input + new_state_input)
+
+
+    return dxdt
 

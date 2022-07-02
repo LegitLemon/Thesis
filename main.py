@@ -117,14 +117,6 @@ def conceptor_retrieval(conceptors, leaking_matrix, internal_weights_computed, o
     # plot_control_errors(6)
 
 
-# Normalise data to be within 0,1
-def normalise_time_series(data):
-    min_val = min(data)
-    max_val = max(data)
-    for idx, val in enumerate(data):
-        data[idx] = (val-min_val)/(max_val-min_val)
-    return data
-
 def couple_pairs(data, tau=17):
     x, y = [], []
     for idx, dat in enumerate(data):
@@ -133,38 +125,28 @@ def couple_pairs(data, tau=17):
             y.append(data[idx-tau])
     return x, y
 
+
+
 def main():
-    initial_condition = [0, 1, 1]
-    parameters = (t)
-    data_lorenz = odeint(lorenz, initial_condition, parameters)
-    x_data = [x[0] for x in data_lorenz]
-    z_data = [z[2] for z in data_lorenz]
+    # generate network settings
+    internal_weights = np.random.standard_normal(size=(N, N))
+    input_weights = np.random.normal(0, 1, size=(N,2))
+    output_weights = np.random.normal(0, 1, size=(N, 2)).transpose()
+    leaking_matrix = np.identity(N)*a_internal
+    # bias_vector = np.random.normal(0, 1, size=(N))
 
-    x_data = normalise_time_series(x_data)
-    z_data = normalise_time_series(z_data)
+    # scale internal weights
+    eigenvalues = eigvals(internal_weights)
+    scaling_factor = max(abs(eigenvalues))
+    print(scaling_factor)
+    internal_weights *= desired_spectral_radius/scaling_factor
 
-    plt.plot(x_data, z_data)
-    plt.show()
+    lorenz_input = generate_lorenz_input()
+    parameters_training = (tau, leaking_matrix, internal_weights, input_weights, lorenz_input)
+    training_data_lorenz = odeint(leaky_esn_two_inputs, np.random.standard_normal(N), t, parameters_training)
 
-    initial_condition = [1, 1, 0]
-
-    data_rossler = odeint(rossler, initial_condition, parameters)
-    x_data = [x[0] for x in data_rossler]
-    y_data = [y[1] for y in data_rossler]
-
-    x_data = normalise_time_series(x_data)
-    y_data = normalise_time_series(y_data)
-
-    plt.plot(x_data, y_data)
-    plt.show()
-
-    mackey_glass_data = mackey_glass()
-    x_data, x_delayed_data = couple_pairs(mackey_glass_data)
-    x_data = normalise_time_series(x_data)
-    x_delayed_data = normalise_time_series(x_delayed_data)
-
-    plt.plot(x_data, x_delayed_data)
-    plt.show()
+#     parameters_training = (tau, leaking_matrix, internal_weights, input_weights, i)
+#     y_training = odeint(leaky_esn, np.random.standard_normal(N), t, parameters_training)
 
 
 if __name__ == "__main__":
