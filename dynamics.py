@@ -161,7 +161,8 @@ def generate_mg_data():
 
 def generate_pattern_matrix_from_dict(attractor_dict):
     input = [attractor_dict[key] for key in attractor_dict.keys()]
-    return input
+    input = np.array(input).T 
+    return input[:,washout_time:]
 
 def generate_attractor_data(initial_condition=[0,1,1], attractor=lorenz, index1=0, index2=2):
     parameters = (t)
@@ -203,13 +204,11 @@ def get_attractor_input(t, input_number):
                 val = temp_data.get(time)
                 break
     if val is None:
-        print(t)
         val = get_attractor_input(t-0.1, input_number)
     return val
 
 
 def leaky_esn_two_inputs(state, t, tau, a_input, w_connec, w_input, input_number):
-    print(t)
     x = state[:N]
     decay_input = np.dot(-a_input, x)
 
@@ -223,4 +222,22 @@ def leaky_esn_two_inputs(state, t, tau, a_input, w_connec, w_input, input_number
 
 
     return dxdt
+def leaky_esn_two_inputs_control(state, t, tau, a_input, w_connec, w_input, input_number, conceptor, control_errors, control_distance):
+    x = state[:N]
+    x_bar = np.dot(conceptor, x)
+    decay_input = np.dot(-a_input, x)
 
+    input_driven = np.dot(w_input, get_attractor_input(t, input_number))
+
+    old_state_input = np.dot(w_connec, x_bar)
+
+    new_state_input = np.tanh(input_driven + old_state_input)
+    control_term = np.dot((np.identity(N)-conceptor), x)
+
+    control_errors[input_number].append(control_term)
+    control_distance[input_number].append(np.linalg.norm(x_bar-x))
+
+    dxdt = (1/tau)*(decay_input + new_state_input - 2.5*control_term)
+
+
+    return dxdt

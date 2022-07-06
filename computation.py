@@ -22,6 +22,14 @@ def compute_delayed_state_matrix(trajectories):
     X_tilde = np.array(state_matrix_delayed)
     return X_tilde
 
+def compute_output(trajectories, used_weights, two_d=False):
+    output = []
+    for point in trajectories:
+        output.append(np.dot(used_weights, point))
+    if two_d:
+        x1 = [x[0] for x in output]
+        x2 = [x[1] for x in output]
+        return x1, x2
 
 def compute_output_weights(trajectories, inputs):
     P = []
@@ -37,8 +45,8 @@ def compute_output_weights(trajectories, inputs):
             P = np.hstack((P, current_pattern))
 
     regularisation_constant_readouts = 0.01
+    print(P.shape, X.shape)
     output_weights_comp = ridge_regression(X, P, regularisation_constant_readouts)
-
     plt.plot(output_weights_comp, '.')
     plt.title("computed readout weights")
     plt.xlabel("neuron index")

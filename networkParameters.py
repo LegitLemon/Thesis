@@ -2,10 +2,10 @@ import numpy as np
 
 number_of_patterns = 3
 
-washout_time = 10
+washout_time = 20
 N = 500
-a_internal = 0.2
-tau = 2
+a_internal = 0.6
+tau = 3
 desired_spectral_radius = 0.4
 
 
