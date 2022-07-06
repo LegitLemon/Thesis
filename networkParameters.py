@@ -1,6 +1,5 @@
 import numpy as np
 
-number_of_patterns = 2
 
 washout_time = 1500
 N = 100
