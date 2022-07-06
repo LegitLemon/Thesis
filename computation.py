@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dynamics import *
 
+
 def ridge_regression(X, P, rho):
     W_1 = np.linalg.inv((np.dot(X, X.transpose()) + rho*np.identity(N)))
     W_opt = (W_1.dot(X).dot(P.transpose())).transpose()

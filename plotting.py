@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from dynamics import *
 path = "plots/"
 
+
 def plot_control_errors(amount, title="Difference between conceptor projection and current state"):
     for i in range(amount):
         index = random.randint(0, N-1)

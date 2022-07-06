@@ -1,6 +1,14 @@
 import numpy as np
 
 
+test_loading_of_system = True
+number_of_patterns = 2
+
+if test_loading_of_system is True:
+    number_of_patterns = 1 
+else:
+    number_of_patterns = 2
+
 washout_time = 1500
 N = 100
 a_internal = 0.2
